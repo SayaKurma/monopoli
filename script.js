@@ -214,6 +214,9 @@ function handleTileAction(player, playerIndex) {
             checkBankruptcy(player);
             message = `${player.name} kehilangan 100 dari Kesempatan!`;
         }
+    } else if (tile.name === "Start") {
+        player.money += 150;
+        message = `${player.name} mendarat di Start dan mendapat 150!`;
     } else if (tile.tax) {
         player.money -= tile.tax;
         checkBankruptcy(player);
