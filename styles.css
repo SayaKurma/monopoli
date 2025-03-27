@@ -144,3 +144,33 @@ button {
 .player-status div {
     margin: 5px 0;
 }
+
+.dice {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 60px;
+    height: 60px;
+    background-color: white;
+    border: 2px solid black;
+    border-radius: 10px;
+    font-size: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 20;
+    transition: transform 0.1s ease;
+}
+
+.dice.rolling {
+    animation: rollDice 1s infinite;
+}
+
+@keyframes rollDice {
+    0% { transform: translate(-50%, -50%) rotate(0deg); }
+    25% { transform: translate(-50%, -50%) rotate(90deg); }
+    50% { transform: translate(-50%, -50%) rotate(180deg); }
+    75% { transform: translate(-50%, -50%) rotate(270deg); }
+    100% { transform: translate(-50%, -50%) rotate(360deg); }
+}
