@@ -89,10 +89,7 @@ function startGame(mode) {
     document.getElementById("actionMessage").textContent = "";
     document.getElementById("gameOver").style.display = "none";
     gameActive = true;
-    isPlayerTurn = true; 
-    currentPlayerIndex = 0; 
     updatePlayerStatus();
-    updateTurnStatus(); 
 }
 
 function initializePlayers() {
@@ -111,23 +108,19 @@ function initializePlayerElements() {
         const playerDiv = document.createElement("div");
         playerDiv.classList.add("player");
         playerDiv.innerHTML = index === 0 ? "♟" : "♞";
-        playerDiv.style.backgroundColor = index === 0 ? "red" : "blue";
-        document.body.appendChild(playerDiv);
+        playerDiv.style.backgroundColor = index === 0 ? "red" : "blue"; 
+        const startCell = path.find(cell => cell.dataset.pos == 0);
+        startCell.appendChild(playerDiv);
         playerElements.push(playerDiv);
     });
-}
-
-function initializeAI() {
 }
 
 function initPlayersPosition() {
     players.forEach((player, index) => {
         const startCell = path.find(cell => cell.dataset.pos == 0);
-        const rect = startCell.getBoundingClientRect();
-        const boardRect = board.getBoundingClientRect();
-        const offsetX = rect.left - boardRect.left + (index * 10);
-        const offsetY = rect.top - boardRect.top + (index * 10);
-        playerElements[index].style.transform = `translate(${offsetX}px, ${offsetY}px)`;
+        playerElements[index].style.left = `${50 + index * 10}%`; 
+        playerElements[index].style.top = `${50 + index * 10}%`; 
+        playerElements[index].style.transform = "translate(-50%, -50%)";
     });
 }
 
@@ -145,21 +138,16 @@ function rollDice() {
 
     movePlayer(currentPlayerIndex);
     handleTileAction(currentPlayer, currentPlayerIndex);
-    nextTurn();
+    updateTurnStatus();
 }
 
 function movePlayer(playerIndex) {
-    const target = positions[players[playerIndex].position];
     const targetCell = path.find(cell => cell.dataset.pos == players[playerIndex].position);
-
     if (targetCell) {
-        const rect = targetCell.getBoundingClientRect();
-        const boardRect = board.getBoundingClientRect();
-        const offsetX = rect.left - boardRect.left + (playerIndex * 10);
-        const offsetY = rect.top - boardRect.top + (playerIndex * 10);
-
-        playerElements[playerIndex].style.transition = "transform 0.5s ease";
-        playerElements[playerIndex].style.transform = `translate(${offsetX}px, ${offsetY}px)`;
+        targetCell.appendChild(playerElements[playerIndex]);
+        playerElements[playerIndex].style.left = `${50 + playerIndex * 10}%`;
+        playerElements[playerIndex].style.top = `${50 + playerIndex * 10}%`;
+        playerElements[playerIndex].style.transform = "translate(-50%, -50%)";
     }
 }
 
@@ -220,24 +208,17 @@ function handleTileAction(player, playerIndex) {
 function updateTurnStatus() {
     if (!gameActive) return;
 
+    isPlayerTurn = !isPlayerTurn;
     const turnStatus = document.getElementById("turnStatus");
-    turnStatus.textContent = `Giliran ${players[currentPlayerIndex].name}!`;
-}
-
-function nextTurn() {
-    if (!gameActive) return;
-
+    if (isPlayerTurn) {
+        turnStatus.textContent = `Giliran ${players[currentPlayerIndex].name}!`;
+    } else {
+        turnStatus.textContent = `${players[currentPlayerIndex].name} sedang bermain`;
+        if (gameMode === 'ai' && currentPlayerIndex === 1) {
+            aiTakeTurn();
+        }
+    }
     currentPlayerIndex = (currentPlayerIndex + 1) % players.length;
-    while (players[currentPlayerIndex].bankrupt && gameActive) {
-        currentPlayerIndex = (currentPlayerIndex + 1) % players.length;
-    }
-
-    isPlayerTurn = currentPlayerIndex === 0 || gameMode === 'local';
-    updateTurnStatus();
-
-    if (gameMode === 'ai' && currentPlayerIndex === 1 && !players[1].bankrupt) {
-        aiTakeTurn();
-    }
 
     checkGameOver();
 }
@@ -248,7 +229,7 @@ function aiTakeTurn() {
     setTimeout(() => {
         const aiPlayer = players[1];
         if (aiPlayer.bankrupt) {
-            nextTurn();
+            updateTurnStatus();
             return;
         }
 
@@ -258,7 +239,7 @@ function aiTakeTurn() {
         aiPlayer.position = (aiPlayer.position + dice) % positions.length;
         movePlayer(1);
         handleTileAction(aiPlayer, 1);
-        nextTurn();
+        updateTurnStatus();
     }, 1000);
 }
 
