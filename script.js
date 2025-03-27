@@ -94,11 +94,11 @@ function startGame(mode) {
 
 function initializePlayers() {
     players = [];
-    players.push({ name: 'Player 1', money: 1500, position: 0, bankrupt: false });
+    players.push({ name: 'Player 1', money: 1500, position: 0, bankrupt: false, inJail: false, jailTurns: 0 });
     if (gameMode === 'local') {
-        players.push({ name: 'Player 2', money: 1500, position: 0, bankrupt: false });
+        players.push({ name: 'Player 2', money: 1500, position: 0, bankrupt: false, inJail: false, jailTurns: 0 });
     } else if (gameMode === 'ai') {
-        players.push({ name: 'AI', money: 1500, position: 0, bankrupt: false });
+        players.push({ name: 'AI', money: 1500, position: 0, bankrupt: false, inJail: false, jailTurns: 0 });
     }
 }
 
@@ -141,15 +141,26 @@ function rollDice() {
         return;
     }
 
-    let dice = Math.floor(Math.random() * 6) + 1;
-    document.getElementById("diceResult").textContent = "Dadu: " + dice;
-
     const currentPlayer = players[currentPlayerIndex];
-    currentPlayer.position = (currentPlayer.position + dice) % positions.length;
+    if (currentPlayer.inJail) {
+        currentPlayer.jailTurns -= 1;
+        if (currentPlayer.jailTurns <= 0) {
+            currentPlayer.inJail = false;
+            document.getElementById("actionMessage").textContent = `${currentPlayer.name} keluar dari penjara dan bisa bermain normal.`;
+        } else {
+            document.getElementById("actionMessage").textContent = `${currentPlayer.name} sedang di penjara, melewatkan giliran. Sisa giliran di penjara: ${currentPlayer.jailTurns}.`;
+        }
+        updateTurnStatus();
+    } else {
+        let dice = Math.floor(Math.random() * 6) + 1;
+        document.getElementById("diceResult").textContent = "Dadu: " + dice;
 
-    movePlayer(currentPlayerIndex);
-    handleTileAction(currentPlayer, currentPlayerIndex);
-    updateTurnStatus();
+        currentPlayer.position = (currentPlayer.position + dice) % positions.length;
+
+        movePlayer(currentPlayerIndex);
+        handleTileAction(currentPlayer, currentPlayerIndex);
+        updateTurnStatus();
+    }
 }
 
 function movePlayer(playerIndex) {
@@ -169,9 +180,11 @@ function handleTileAction(player, playerIndex) {
     let message = "";
 
     if (tile.name === "Masuk Penjara") {
+        player.inJail = true;
+        player.jailTurns = 3;
         player.position = positions.findIndex(t => t.name === "Masuk Penjara");
         movePlayer(playerIndex);
-        message = `${player.name} masuk penjara!`;
+        message = `${player.name} masuk penjara dan harus melewatkan 3 giliran!`;
     } else if (tile.name === "Kesempatan") {
         const chance = Math.random();
         if (chance < 0.5) {
@@ -250,13 +263,24 @@ function aiTakeTurn() {
             return;
         }
 
-        let dice = Math.floor(Math.random() * 6) + 1;
-        document.getElementById("diceResult").textContent = "Dadu AI: " + dice;
+        if (aiPlayer.inJail) {
+            aiPlayer.jailTurns -= 1;
+            if (aiPlayer.jailTurns <= 0) {
+                aiPlayer.inJail = false;
+                document.getElementById("actionMessage").textContent = `${aiPlayer.name} keluar dari penjara dan bisa bermain normal.`;
+            } else {
+                document.getElementById("actionMessage").textContent = `${aiPlayer.name} sedang di penjara, melewatkan giliran. Sisa giliran di penjara: ${aiPlayer.jailTurns}.`;
+            }
+            updateTurnStatus();
+        } else {
+            let dice = Math.floor(Math.random() * 6) + 1;
+            document.getElementById("diceResult").textContent = "Dadu AI: " + dice;
 
-        aiPlayer.position = (aiPlayer.position + dice) % positions.length;
-        movePlayer(1);
-        handleTileAction(aiPlayer, 1);
-        updateTurnStatus();
+            aiPlayer.position = (aiPlayer.position + dice) % positions.length;
+            movePlayer(1);
+            handleTileAction(aiPlayer, 1);
+            updateTurnStatus();
+        }
     }, 1000);
 }
 
@@ -292,7 +316,12 @@ function updatePlayerStatus() {
     statusDiv.innerHTML = "";
     players.forEach(player => {
         const ownedProperties = positions.filter(p => p.owner === player.name).map(p => p.name).join(", ");
-        const statusText = `${player.name}: Uang = ${player.money}, Properti = ${ownedProperties || "Tidak ada"} ${player.bankrupt ? "(Bangkrut)" : ""}`;
+        let statusText = `${player.name}: Uang = ${player.money}, Properti = ${ownedProperties || "Tidak ada"}`;
+        if (player.inJail) {
+            statusText += ` (Di penjara, sisa giliran: ${player.jailTurns})`;
+        } else if (player.bankrupt) {
+            statusText += " (Bangkrut)";
+        }
         const p = document.createElement("div");
         p.textContent = statusText;
         statusDiv.appendChild(p);
