@@ -74,7 +74,6 @@ for (let y = 0; y < 11; y++) {
 let gameMode = 'local';
 let players = [];
 let currentPlayerIndex = 0;
-let isPlayerTurn = true;
 let gameActive = false;
 
 function startGame(mode) {
@@ -89,7 +88,8 @@ function startGame(mode) {
     document.getElementById("actionMessage").textContent = "";
     document.getElementById("gameOver").style.display = "none";
     gameActive = true;
-    updatePlayerStatus();
+    currentPlayerIndex = 0;
+    updateTurnStatus();
 }
 
 function initializePlayers() {
@@ -110,7 +110,7 @@ function initializePlayerElements() {
         playerDiv.innerHTML = index === 0 ? "♟" : "♞";
         playerDiv.style.backgroundColor = index === 0 ? "red" : "blue";
         const startCell = path.find(cell => cell.dataset.pos == 0);
-        startCell.appendChild(playerDiv); // Pion ditambahkan ke sel papan
+        startCell.appendChild(playerDiv);
         playerElements.push(playerDiv);
     });
 }
@@ -122,15 +122,23 @@ function initializeAI() {
 function initPlayersPosition() {
     players.forEach((player, index) => {
         const startCell = path.find(cell => cell.dataset.pos == 0);
-        playerElements[index].style.left = `${50 + index * 10}%`; // Offset agar tidak bertumpuk
+        playerElements[index].style.left = `${50 + index * 10}%`;
         playerElements[index].style.top = `${50 + index * 10}%`;
         playerElements[index].style.transform = "translate(-50%, -50%)";
     });
 }
 
 function rollDice() {
-    if (!gameActive || !isPlayerTurn) {
-        alert("Tunggu giliranmu atau permainan sudah selesai!");
+    if (!gameActive) {
+        alert("Permainan sudah selesai!");
+        return;
+    }
+    if (gameMode === 'ai' && currentPlayerIndex !== 0) {
+        alert("Tunggu giliranmu!");
+        return;
+    }
+    if (players[currentPlayerIndex].bankrupt) {
+        alert("Pemain ini bangkrut!");
         return;
     }
 
@@ -212,18 +220,15 @@ function handleTileAction(player, playerIndex) {
 function updateTurnStatus() {
     if (!gameActive) return;
 
-    isPlayerTurn = !isPlayerTurn;
-    const turnStatus = document.getElementById("turnStatus");
-    if (isPlayerTurn) {
-        turnStatus.textContent = `Giliran ${players[currentPlayerIndex].name}!`;
-    } else {
-        turnStatus.textContent = `${players[currentPlayerIndex].name} sedang bermain`;
-        if (gameMode === 'ai' && currentPlayerIndex === 1) {
-            aiTakeTurn();
-        }
-    }
     currentPlayerIndex = (currentPlayerIndex + 1) % players.length;
-
+    while (players[currentPlayerIndex].bankrupt && currentPlayerIndex !== 0) {
+        currentPlayerIndex = (currentPlayerIndex + 1) % players.length;
+    }
+    const turnStatus = document.getElementById("turnStatus");
+    turnStatus.textContent = `Giliran ${players[currentPlayerIndex].name}!`;
+    if (gameMode === 'ai' && currentPlayerIndex === 1) {
+        aiTakeTurn();
+    }
     checkGameOver();
 }
 
@@ -284,13 +289,4 @@ function updatePlayerStatus() {
         p.textContent = statusText;
         statusDiv.appendChild(p);
     });
-}
-
-function nextTurn() {
-    currentPlayerIndex = (currentPlayerIndex + 1) % players.length;
-    if (gameMode === 'ai' && currentPlayerIndex === 1) {
-        aiTakeTurn();
-    } else {
-        isPlayerTurn = true;
-    }
 }
