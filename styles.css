@@ -11,7 +11,7 @@ body {
     margin: 20px auto;
     width: 700px;
     height: 700px;
-    position: relative;
+    position: relative; 
 }
 
 .cell {
@@ -22,7 +22,7 @@ body {
     background-color: lightgray;
     font-size: 12px;
     text-align: center;
-    position: relative;
+    position: relative; 
 }
 
 .corner {
@@ -56,6 +56,10 @@ body {
     color: white;
     font-size: 14px;
     z-index: 10;
+    top: 50%; 
+    left: 50%; 
+    transform: translate(-50%, -50%); 
+    transition: all 0.5s ease; 
 }
 
 .property {
