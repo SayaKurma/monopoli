@@ -27,8 +27,7 @@ const positions = [
     { x: 9, y: 0, name: "Thimphu", color: "navy", price: 160, rent: 16, isAvailable: true, owner: null }, 
     { x: 8, y: 0, name: "Ulaanbaatar", color: "magenta", price: 140, rent: 14, isAvailable: true, owner: null }, 
     { x: 7, y: 0, name: "Bangkok", color: "yellow", price: 350, rent: 35, isAvailable: true, owner: null }, 
-    { x: 6, y: 0, name: "Dhaka", color: "lime", price: 280, rent: 28, isAvailable: true, owner: null },
-    { x: 5, y: 0, name: "Islamabad", color: "maroon", price: 200, rent: 20, isAvailable: true, owner: null }, 
+    { x: 6, y: 0, name: "Dhaka", color: "lime", price: 280, rent: 28, isAvailable: true, owner:    { x: 5, y: 0, name: "Islamabad", color: "maroon", price: 200, rent: 20, isAvailable: true, owner: null }, 
     { x: 4, y: 0, name: "Bea Cukai", tax: 100 },
     { x: 3, y: 0, name: "Dushanbe", color: "coral", price: 210, rent: 21, isAvailable: true, owner: null }, 
     { x: 2, y: 0, name: "Ashgabat", color: "violet", price: 240, rent: 24, isAvailable: true, owner: null },
@@ -116,7 +115,6 @@ function initializePlayerElements() {
 }
 
 function initializeAI() {
-    // Placeholder untuk logika AI, saat ini kosong
 }
 
 function initPlayersPosition() {
@@ -193,8 +191,17 @@ function handleTileAction(player, playerIndex) {
         message = `${player.name} membayar ${tile.cost} untuk ${tile.name}.`;
     } else if (tile.price && tile.isAvailable) {
         if (player.money >= tile.price) {
-            buyProperty(player, tile);
-            message = `${player.name} membeli ${tile.name} seharga ${tile.price}!`;
+            if (gameMode === 'local' || (gameMode === 'ai' && playerIndex === 0)) {
+                if (confirm(`Apakah Anda ingin membeli ${tile.name} seharga ${tile.price}?`)) {
+                    buyProperty(player, tile);
+                    message = `${player.name} membeli ${tile.name} seharga ${tile.price}!`;
+                } else {
+                    message = `${player.name} memilih untuk tidak membeli ${tile.name}.`;
+                }
+            } else {
+                buyProperty(player, tile);
+                message = `${player.name} membeli ${tile.name} seharga ${tile.price}!`;
+            }
         } else {
             message = `${player.name} tidak punya cukup uang untuk membeli ${tile.name}.`;
         }
