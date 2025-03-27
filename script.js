@@ -76,6 +76,15 @@ let players = [];
 let currentPlayerIndex = 0;
 let gameActive = false;
 
+const diceFaces = [
+    "⚀", // 1
+    "⚁", // 2
+    "⚂", // 3
+    "⚃", // 4
+    "⚄", // 5
+    "⚅"  // 6
+];
+
 function startGame(mode) {
     gameMode = mode;
     initializePlayers();
@@ -142,25 +151,35 @@ function rollDice() {
     }
 
     const currentPlayer = players[currentPlayerIndex];
-    if (currentPlayer.inJail) {
-        currentPlayer.jailTurns -= 1;
-        if (currentPlayer.jailTurns <= 0) {
-            currentPlayer.inJail = false;
-            document.getElementById("actionMessage").textContent = `${currentPlayer.name} keluar dari penjara dan bisa bermain normal.`;
+    const diceElement = document.getElementById("dice");
+    diceElement.style.display = "block";
+    diceElement.classList.add("rolling");
+
+    let dice = Math.floor(Math.random() * 6) + 1;
+    setTimeout(() => {
+        diceElement.classList.remove("rolling");
+        diceElement.textContent = diceFaces[dice - 1]; 
+        document.getElementById("diceResult").textContent = `Dadu: ${dice}`;
+
+        if (currentPlayer.inJail) {
+            currentPlayer.jailTurns -= 1;
+            if (currentPlayer.jailTurns <= 0) {
+                currentPlayer.inJail = false;
+                document.getElementById("actionMessage").textContent = `${currentPlayer.name} keluar dari penjara dan bisa bermain normal.`;
+            } else {
+                document.getElementById("actionMessage").textContent = `${currentPlayer.name} sedang di penjara, melewatkan giliran. Sisa giliran di penjara: ${currentPlayer.jailTurns}.`;
+            }
+            updateTurnStatus();
         } else {
-            document.getElementById("actionMessage").textContent = `${currentPlayer.name} sedang di penjara, melewatkan giliran. Sisa giliran di penjara: ${currentPlayer.jailTurns}.`;
+            currentPlayer.position = (currentPlayer.position + dice) % positions.length;
+            movePlayer(currentPlayerIndex);
+            handleTileAction(currentPlayer, currentPlayerIndex);
+            updateTurnStatus();
         }
-        updateTurnStatus();
-    } else {
-        let dice = Math.floor(Math.random() * 6) + 1;
-        document.getElementById("diceResult").textContent = "Dadu: " + dice;
-
-        currentPlayer.position = (currentPlayer.position + dice) % positions.length;
-
-        movePlayer(currentPlayerIndex);
-        handleTileAction(currentPlayer, currentPlayerIndex);
-        updateTurnStatus();
-    }
+        setTimeout(() => {
+            diceElement.style.display = "none"; 
+        }, 500);
+    }, 1000); 
 }
 
 function movePlayer(playerIndex) {
@@ -263,24 +282,35 @@ function aiTakeTurn() {
             return;
         }
 
-        if (aiPlayer.inJail) {
-            aiPlayer.jailTurns -= 1;
-            if (aiPlayer.jailTurns <= 0) {
-                aiPlayer.inJail = false;
-                document.getElementById("actionMessage").textContent = `${aiPlayer.name} keluar dari penjara dan bisa bermain normal.`;
-            } else {
-                document.getElementById("actionMessage").textContent = `${aiPlayer.name} sedang di penjara, melewatkan giliran. Sisa giliran di penjara: ${aiPlayer.jailTurns}.`;
-            }
-            updateTurnStatus();
-        } else {
-            let dice = Math.floor(Math.random() * 6) + 1;
-            document.getElementById("diceResult").textContent = "Dadu AI: " + dice;
+        const diceElement = document.getElementById("dice");
+        diceElement.style.display = "block";
+        diceElement.classList.add("rolling");
 
-            aiPlayer.position = (aiPlayer.position + dice) % positions.length;
-            movePlayer(1);
-            handleTileAction(aiPlayer, 1);
-            updateTurnStatus();
-        }
+        let dice = Math.floor(Math.random() * 6) + 1;
+        setTimeout(() => {
+            diceElement.classList.remove("rolling");
+            diceElement.textContent = diceFaces[dice - 1];
+            document.getElementById("diceResult").textContent = `Dadu AI: ${dice}`;
+
+            if (aiPlayer.inJail) {
+                aiPlayer.jailTurns -= 1;
+                if (aiPlayer.jailTurns <= 0) {
+                    aiPlayer.inJail = false;
+                    document.getElementById("actionMessage").textContent = `${aiPlayer.name} keluar dari penjara dan bisa bermain normal.`;
+                } else {
+                    document.getElementById("actionMessage").textContent = `${aiPlayer.name} sedang di penjara, melewatkan giliran. Sisa giliran di penjara: ${aiPlayer.jailTurns}.`;
+                }
+                updateTurnStatus();
+            } else {
+                aiPlayer.position = (aiPlayer.position + dice) % positions.length;
+                movePlayer(1);
+                handleTileAction(aiPlayer, 1);
+                updateTurnStatus();
+            }
+            setTimeout(() => {
+                diceElement.style.display = "none";
+            }, 500);
+        }, 1000);
     }, 1000);
 }
 
