@@ -19,17 +19,17 @@ const positions = [
     { x: 10, y: 7, name: "Beijing", color: "green", price: 450, rent: 45, isAvailable: true, owner: null }, 
     { x: 10, y: 6, name: "Manama", color: "beige", price: 330, rent: 33, isAvailable: true, owner: null },
     { x: 10, y: 5, name: "Damaskus", color: "cyan", price: 150, rent: 15, isAvailable: true, owner: null }, 
-    { x: 10, y: 4, name: "PLN", cost: 50 }, // Utilitas
+    { x: 10, y: 4, name: "PLN", cost: 50 },
     { x: 10, y: 3, name: "Kathmandu", color: "silver", price: 220, rent: 22, isAvailable: true, owner: null }, 
     { x: 10, y: 2, name: "Vientiane", color: "brown", price: 200, rent: 20, isAvailable: true, owner: null },
-    { x: 10, y: 1, name: "PDAM", cost: 50 }, // Utilitas
+    { x: 10, y: 1, name: "PDAM", cost: 50 },
     { x: 10, y: 0, name: "Bebas Parkir" },
     { x: 9, y: 0, name: "Thimphu", color: "navy", price: 160, rent: 16, isAvailable: true, owner: null }, 
     { x: 8, y: 0, name: "Ulaanbaatar", color: "magenta", price: 140, rent: 14, isAvailable: true, owner: null }, 
     { x: 7, y: 0, name: "Bangkok", color: "yellow", price: 350, rent: 35, isAvailable: true, owner: null }, 
     { x: 6, y: 0, name: "Dhaka", color: "lime", price: 280, rent: 28, isAvailable: true, owner: null },
     { x: 5, y: 0, name: "Islamabad", color: "maroon", price: 200, rent: 20, isAvailable: true, owner: null }, 
-    { x: 4, y: 0, name: "Bea Cukai", tax: 100 }, // Pajak
+    { x: 4, y: 0, name: "Bea Cukai", tax: 100 },
     { x: 3, y: 0, name: "Dushanbe", color: "coral", price: 210, rent: 21, isAvailable: true, owner: null }, 
     { x: 2, y: 0, name: "Ashgabat", color: "violet", price: 240, rent: 24, isAvailable: true, owner: null },
     { x: 0, y: 0, name: "Kesempatan" }, 
@@ -89,7 +89,10 @@ function startGame(mode) {
     document.getElementById("actionMessage").textContent = "";
     document.getElementById("gameOver").style.display = "none";
     gameActive = true;
+    isPlayerTurn = true; 
+    currentPlayerIndex = 0; 
     updatePlayerStatus();
+    updateTurnStatus(); 
 }
 
 function initializePlayers() {
@@ -142,7 +145,7 @@ function rollDice() {
 
     movePlayer(currentPlayerIndex);
     handleTileAction(currentPlayer, currentPlayerIndex);
-    updateTurnStatus();
+    nextTurn();
 }
 
 function movePlayer(playerIndex) {
@@ -217,17 +220,24 @@ function handleTileAction(player, playerIndex) {
 function updateTurnStatus() {
     if (!gameActive) return;
 
-    isPlayerTurn = !isPlayerTurn;
     const turnStatus = document.getElementById("turnStatus");
-    if (isPlayerTurn) {
-        turnStatus.textContent = `Giliran ${players[currentPlayerIndex].name}!`;
-    } else {
-        turnStatus.textContent = `${players[currentPlayerIndex].name} sedang bermain`;
-        if (gameMode === 'ai' && currentPlayerIndex === 1) {
-            aiTakeTurn();
-        }
-    }
+    turnStatus.textContent = `Giliran ${players[currentPlayerIndex].name}!`;
+}
+
+function nextTurn() {
+    if (!gameActive) return;
+
     currentPlayerIndex = (currentPlayerIndex + 1) % players.length;
+    while (players[currentPlayerIndex].bankrupt && gameActive) {
+        currentPlayerIndex = (currentPlayerIndex + 1) % players.length;
+    }
+
+    isPlayerTurn = currentPlayerIndex === 0 || gameMode === 'local';
+    updateTurnStatus();
+
+    if (gameMode === 'ai' && currentPlayerIndex === 1 && !players[1].bankrupt) {
+        aiTakeTurn();
+    }
 
     checkGameOver();
 }
@@ -238,7 +248,7 @@ function aiTakeTurn() {
     setTimeout(() => {
         const aiPlayer = players[1];
         if (aiPlayer.bankrupt) {
-            updateTurnStatus();
+            nextTurn();
             return;
         }
 
@@ -248,7 +258,7 @@ function aiTakeTurn() {
         aiPlayer.position = (aiPlayer.position + dice) % positions.length;
         movePlayer(1);
         handleTileAction(aiPlayer, 1);
-        updateTurnStatus();
+        nextTurn();
     }, 1000);
 }
 
@@ -263,7 +273,7 @@ function buyProperty(player, property) {
 function checkBankruptcy(player) {
     if (player.money < 0) {
         player.bankrupt = true;
-        playerElements[players.indexOf(player)].style.display = "none"; 
+        playerElements[players.indexOf(player)].style.display = "none";
         document.getElementById("actionMessage").textContent = `${player.name} bangkrut!`;
     }
 }
