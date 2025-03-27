@@ -125,3 +125,18 @@ button {
     font-size: 16px;
     color: #333;
 }
+
+.player-status {
+    margin-top: 20px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    background-color: #f9f9f9;
+    text-align: left;
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.player-status div {
+    margin: 5px 0;
+}
