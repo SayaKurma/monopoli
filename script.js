@@ -154,7 +154,8 @@ function startGame(mode) {
     gameActive = true;
     currentPlayerIndex = 0;
     updateTurnStatus();
-    updateRollDiceButtonState(); 
+    updatePlayerIcons();
+    updateMoneyStatus();
 }
 
 function initializePlayers() {
@@ -188,6 +189,11 @@ function initPlayersPosition() {
         playerElements[index].style.top = `${50 + index * 10}%`;
         playerElements[index].style.transform = "translate(-50%, -50%)";
     });
+}
+
+function updatePlayerIcons() {
+    const player2Icon = document.getElementById("player2Icon");
+    player2Icon.innerHTML = gameMode === 'ai' ? '<span class="material-symbols-outlined">smart_toy</span>' : '<span class="material-symbols-outlined">person</span>';
 }
 
 function rollDice() {
@@ -305,7 +311,7 @@ function handleTileAction(player, playerIndex) {
     }
 
     showBubbleText(message); 
-    updatePlayerStatus();
+    updateMoneyStatus();
     updateTurnStatus();
 }
 
@@ -326,6 +332,7 @@ function handleJailTurn(player, dice) {
             showBubbleText(`${player.name} melempar dadu ${dice}, tetap di penjara. Sisa ${player.jailTurns} giliran.`);
         }
     }
+    updateMoneyStatus();
     updateTurnStatus();
 }
 
@@ -353,12 +360,13 @@ function checkBankruptcy(player) {
 
 function updateTurnStatus() {
     if (!gameActive) return;
+    document.getElementById("turnPlayer1").style.display = currentPlayerIndex === 0 ? "block" : "none";
+    document.getElementById("turnPlayer2").style.display = currentPlayerIndex === 1 ? "block" : "none";
     currentPlayerIndex = (currentPlayerIndex + 1) % players.length;
     while (players[currentPlayerIndex].bankrupt) {
         currentPlayerIndex = (currentPlayerIndex + 1) % players.length;
     }
-    document.getElementById("turnStatus").textContent = `Giliran ${players[currentPlayerIndex].name}!`;
-    updateRollDiceButtonState(); 
+    updateRollDiceButtonState();
     if (gameMode === 'ai' && currentPlayerIndex === 1) aiTakeTurn();
     checkGameOver();
 }
@@ -422,26 +430,21 @@ function checkGameOver() {
     }
 }
 
-function updatePlayerStatus() {
-    const statusDiv = document.getElementById("playerStatus");
-    statusDiv.innerHTML = "";
-    players.forEach(player => {
-        let text = `${player.name}: Uang = ${player.money}`;
-        if (player.inJail) text += ` (Penjara: ${player.jailTurns} giliran)`;
-        if (player.bankrupt) text += " (Bangkrut)";
-        if (player.hasGetOutOfJailCard) text += " (Kartu Bebas)";
-        statusDiv.innerHTML += `<div>${text}</div>`;
-    });
+function updateMoneyStatus() {
+    const wealth = (player) => {
+        const ownedProperties = positions.filter(p => p.owner === player.name && p.price);
+        return ownedProperties.reduce((sum, p) => sum + p.price, 0);
+    };
+    document.getElementById("moneyPlayer1").textContent = `${players[0].money}(${wealth(players[0])})`;
+    document.getElementById("moneyPlayer2").textContent = `${players[1].money}(${wealth(players[1])})`;
 }
 
 function updateRollDiceButtonState() {
     const rollDiceButton = document.getElementById("rollDiceButton");
     if (!gameActive || (gameMode === 'ai' && currentPlayerIndex !== 0)) {
         rollDiceButton.disabled = true; 
-        rollDiceButton.style.opacity = "0.5"; 
     } else {
         rollDiceButton.disabled = false; 
-        rollDiceButton.style.opacity = "1"; 
     }
 }
 
