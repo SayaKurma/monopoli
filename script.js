@@ -78,6 +78,11 @@ for (let y = 0; y < 11; y++) {
     }
 }
 
+const bankImage = document.createElement("div");
+bankImage.classList.add("bank-image");
+bankImage.textContent = "BANK"; 
+board.appendChild(bankImage);
+
 let gameMode = 'local';
 let players = [];
 let currentPlayerIndex = 0;
@@ -118,6 +123,15 @@ const apesEffects = [
     },
     (player) => { player.money -= 50; return `${player.name} membayar denda 50 karena apes!`; }
 ];
+
+function showBubbleText(message) {
+    const bubble = document.getElementById("bubbleText");
+    bubble.textContent = message;
+    bubble.style.display = "block";
+    setTimeout(() => {
+        bubble.style.display = "none";
+    }, 3000); 
+}
 
 window.onload = () => {
     setTimeout(() => {
@@ -290,6 +304,7 @@ function handleTileAction(player, playerIndex) {
             }
     }
 
+    showBubbleText(message); 
     document.getElementById("actionMessage").textContent = message;
     updatePlayerStatus();
     updateTurnStatus();
@@ -301,15 +316,15 @@ function handleJailTurn(player, dice) {
         player.jailTurns = 0;
         player.position = (player.position + dice) % positions.length;
         movePlayer(players.indexOf(player));
-        document.getElementById("actionMessage").textContent = `${player.name} melempar dadu 6 dan keluar dari penjara! Bergerak ${dice} langkah.`;
+        showBubbleText(`${player.name} melempar dadu 6 dan keluar dari penjara! Bergerak ${dice} langkah.`);
         handleTileAction(player, players.indexOf(player));
     } else {
         player.jailTurns -= 1;
         if (player.jailTurns <= 0) {
             player.inJail = false;
-            document.getElementById("actionMessage").textContent = `${player.name} keluar dari penjara setelah melempar dadu.`;
+            showBubbleText(`${player.name} keluar dari penjara setelah melempar dadu.`);
         } else {
-            document.getElementById("actionMessage").textContent = `${player.name} melempar dadu ${dice}, tetap di penjara. Sisa ${player.jailTurns} giliran.`;
+            showBubbleText(`${player.name} melempar dadu ${dice}, tetap di penjara. Sisa ${player.jailTurns} giliran.`);
         }
     }
     updateTurnStatus();
@@ -333,7 +348,7 @@ function checkBankruptcy(player) {
     if (player.money < 0) {
         player.bankrupt = true;
         playerElements[players.indexOf(player)].style.display = "none";
-        document.getElementById("actionMessage").textContent = `${player.name} bangkrut!`;
+        showBubbleText(`${player.name} bangkrut!`);
     }
 }
 
@@ -388,7 +403,7 @@ function checkGameOver() {
         gameOverDiv.textContent = activePlayers.length === 1 ?
             `${activePlayers[0].name} menang!` : "Permainan berakhir tanpa pemenang!";
         gameOverDiv.style.display = "block";
-        
+
         if (activePlayers.length === 1) {
             confetti({
                 particleCount: 100,
