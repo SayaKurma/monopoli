@@ -119,8 +119,17 @@ const apesEffects = [
     (player) => { player.money -= 50; return `${player.name} membayar denda 50 karena apes!`; }
 ];
 
+window.onload = () => {
+    setTimeout(() => {
+        document.getElementById("loadingScreen").style.display = "none";
+        document.getElementById("modeSelection").style.display = "flex";
+    }, 2000); 
+};
+
 function startGame(mode) {
     gameMode = mode;
+    document.getElementById("modeSelection").style.display = "none";
+    document.getElementById("gameScreen").style.display = "block";
     initializePlayers();
     initializePlayerElements();
     document.getElementById('rollDiceButton').style.display = 'block';
