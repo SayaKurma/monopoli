@@ -153,6 +153,7 @@ function initializePlayers() {
 }
 
 function initializePlayerElements() {
+    playerElements.forEach(el => el.remove()); // Hapus elemen pemain sebelumnya
     playerElements = [];
     players.forEach((player, index) => {
         const playerDiv = document.createElement("div");
@@ -383,9 +384,27 @@ function checkGameOver() {
     if (activePlayers.length <= 1) {
         gameActive = false;
         document.getElementById("rollDiceButton").style.display = "none";
-        document.getElementById("gameOver").textContent = activePlayers.length === 1 ?
+        const gameOverDiv = document.getElementById("gameOver");
+        gameOverDiv.textContent = activePlayers.length === 1 ?
             `${activePlayers[0].name} menang!` : "Permainan berakhir tanpa pemenang!";
-        document.getElementById("gameOver").style.display = "block";
+        gameOverDiv.style.display = "block";
+        
+        if (activePlayers.length === 1) {
+            confetti({
+                particleCount: 100,
+                spread: 70,
+                origin: { y: 0.6 }
+            });
+        }
+
+        const buttonsDiv = document.createElement("div");
+        buttonsDiv.classList.add("game-over-buttons");
+        buttonsDiv.innerHTML = `
+            <button onclick="restartGame()">Main Lagi</button>
+            <button onclick="returnToModeSelection()">Kembali</button>
+        `;
+        gameOverDiv.insertAdjacentElement("afterend", buttonsDiv);
+
         updateRollDiceButtonState(); 
     }
 }
@@ -411,4 +430,39 @@ function updateRollDiceButtonState() {
         rollDiceButton.disabled = false; 
         rollDiceButton.style.opacity = "1"; 
     }
+}
+
+function restartGame() {
+    positions.forEach(pos => {
+        if (pos.price) {
+            pos.isAvailable = true;
+            pos.owner = null;
+            const cell = path.find(c => c.dataset.pos == positions.indexOf(pos));
+            const label = cell.querySelector(".property-label");
+            if (label) label.remove();
+        }
+    });
+
+    const buttonsDiv = document.querySelector(".game-over-buttons");
+    if (buttonsDiv) buttonsDiv.remove();
+
+    startGame(gameMode);
+}
+
+function returnToModeSelection() {
+    positions.forEach(pos => {
+        if (pos.price) {
+            pos.isAvailable = true;
+            pos.owner = null;
+            const cell = path.find(c => c.dataset.pos == positions.indexOf(pos));
+            const label = cell.querySelector(".property-label");
+            if (label) label.remove();
+        }
+    });
+
+    const buttonsDiv = document.querySelector(".game-over-buttons");
+    if (buttonsDiv) buttonsDiv.remove();
+
+    document.getElementById("gameScreen").style.display = "none";
+    document.getElementById("modeSelection").style.display = "flex";
 }
