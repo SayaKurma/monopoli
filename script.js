@@ -82,7 +82,7 @@ const diceFaces = [
     "⚂", 
     "⚃", 
     "⚄", 
-    "⚅"
+    "⚅"  
 ];
 
 const chanceEffects = [
@@ -111,7 +111,7 @@ const chanceEffects = [
     function(player, playerIndex) {
         player.position = 0;
         movePlayer(playerIndex);
-        player.money += 150;
+        player.money += 150; 
         return `${player.name} maju ke Start dan mendapat 150!`;
     },
     function(player, playerIndex) {
@@ -256,7 +256,7 @@ function handleTileAction(player, playerIndex) {
         const effectFunction = chanceEffects[randomEffectIndex];
         message = effectFunction(player, playerIndex);
         if (randomEffectIndex === 3 || randomEffectIndex === 4) {
-            handleTileAction(player, playerIndex);
+            handleTileAction(player, playerIndex); 
         }
     } else if (tile.name === "Start") {
         player.money += 150;
@@ -276,28 +276,28 @@ function handleTileAction(player, playerIndex) {
                     buyProperty(player, tile);
                     message = `${player.name} membeli ${tile.name} seharga ${tile.price}!`;
                 } else {
-                    message = `${player.name memilih untuk tidak membeli ${tile.name}.`;
+                    message = `${player.name} memilih untuk tidak membeli ${tile.name}.`;
                 }
             } else {
                 buyProperty(player, tile);
-                message = `${player.name membeli ${tile.name} seharga ${tile.price}!`;
+                message = `${player.name} membeli ${tile.name} seharga ${tile.price}!`;
             }
         } else {
-            message = `${player.name tidak punya cukup uang untuk membeli ${tile.name}.`;
+            message = `${player.name} tidak punya cukup uang untuk membeli ${tile.name}.`;
         }
     } else if (tile.price && !tile.isAvailable && tile.owner !== player.name) {
         const owner = players.find(p => p.name === tile.owner);
         if (!owner.bankrupt && player.money >= tile.rent) {
             player.money -= tile.rent;
             owner.money += tile.rent;
-            message = `${player.name membayar sewa ${tile.rent} ke ${tile.owner} untuk ${tile.name}.`;
+            message = `${player.name} membayar sewa ${tile.rent} ke ${tile.owner} untuk ${tile.name}.`;
         } else if (!owner.bankrupt) {
             player.money -= tile.rent;
             checkBankruptcy(player);
-            message = `${player.name tidak punya cukup uang untuk membayar sewa ${tile.rent} di ${tile.name}.`;
+            message = `${player.name} tidak punya cukup uang untuk membayar sewa ${tile.rent} di ${tile.name}.`;
         }
     } else {
-        message = `${player.name mendarat di ${tile.name}.`;
+        message = `${player.name} mendarat di ${tile.name}.`;
     }
 
     document.getElementById("actionMessage").textContent = message;
@@ -324,3 +324,86 @@ function aiTakeTurn() {
 
     setTimeout(() => {
         const aiPlayer = players[1];
+        if (aiPlayer.bankrupt) {
+            updateTurnStatus();
+            return;
+        }
+
+        const diceElement = document.getElementById("dice");
+        diceElement.style.display = "block";
+        diceElement.classList.add("rolling");
+
+        let dice = Math.floor(Math.random() * 6) + 1;
+        setTimeout(() => {
+            diceElement.classList.remove("rolling");
+            diceElement.textContent = diceFaces[dice - 1];
+            document.getElementById("diceResult").textContent = `Dadu AI: ${dice}`;
+
+            if (aiPlayer.inJail) {
+                aiPlayer.jailTurns -= 1;
+                if (aiPlayer.jailTurns <= 0) {
+                    aiPlayer.inJail = false;
+                    document.getElementById("actionMessage").textContent = `${aiPlayer.name} keluar dari penjara dan bisa bermain normal.`;
+                } else {
+                    document.getElementById("actionMessage").textContent = `${aiPlayer.name} sedang di penjara, melewatkan giliran. Sisa giliran di penjara: ${aiPlayer.jailTurns}.`;
+                }
+                updateTurnStatus();
+            } else {
+                aiPlayer.position = (aiPlayer.position + dice) % positions.length;
+                movePlayer(1);
+                handleTileAction(aiPlayer, 1);
+                updateTurnStatus();
+            }
+            setTimeout(() => {
+                diceElement.style.display = "none";
+            }, 500);
+        }, 1000);
+    }, 1000);
+}
+
+function buyProperty(player, property) {
+    if (player.money >= property.price) {
+        player.money -= property.price;
+        property.owner = player.name;
+        property.isAvailable = false;
+    }
+}
+
+function checkBankruptcy(player) {
+    if (player.money < 0) {
+        player.bankrupt = true;
+        playerElements[players.indexOf(player)].style.display = "none";
+        document.getElementById("actionMessage").textContent = `${player.name} bangkrut!`;
+    }
+}
+
+function checkGameOver() {
+    const activePlayers = players.filter(p => !p.bankrupt);
+    if (activePlayers.length <= 1) {
+        gameActive = false;
+        document.getElementById("rollDiceButton").style.display = "none";
+        document.getElementById("gameOver").style.display = "block";
+        document.getElementById("gameOver").textContent = activePlayers.length === 1 ? 
+            `${activePlayers[0].name} menang!` : "Permainan berakhir tanpa pemenang!";
+    }
+}
+
+function updatePlayerStatus() {
+    const statusDiv = document.getElementById("playerStatus");
+    statusDiv.innerHTML = "";
+    players.forEach(player => {
+        const ownedProperties = positions.filter(p => p.owner === player.name).map(p => p.name).join(", ");
+        let statusText = `${player.name}: Uang = ${player.money}, Properti = ${ownedProperties || "Tidak ada"}`;
+        if (player.inJail) {
+            statusText += ` (Di penjara, sisa giliran: ${player.jailTurns})`;
+        } else if (player.bankrupt) {
+            statusText += " (Bangkrut)";
+        }
+        if (player.hasGetOutOfJailCard) {
+            statusText += " (Memiliki kartu bebas penjara)";
+        }
+        const p = document.createElement("div");
+        p.textContent = statusText;
+        statusDiv.appendChild(p);
+    });
+}
