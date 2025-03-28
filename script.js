@@ -153,7 +153,7 @@ function initializePlayers() {
 }
 
 function initializePlayerElements() {
-    playerElements.forEach(el => el.remove()); // Hapus elemen pemain sebelumnya
+    playerElements.forEach(el => el.remove()); 
     playerElements = [];
     players.forEach((player, index) => {
         const playerDiv = document.createElement("div");
