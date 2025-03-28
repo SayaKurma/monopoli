@@ -80,7 +80,9 @@ for (let y = 0; y < 11; y++) {
 
 const bankImage = document.createElement("div");
 bankImage.classList.add("bank-image");
-bankImage.textContent = "BANK"; 
+bankImage.style.backgroundImage = "url('bank.png')"; 
+bankImage.style.backgroundSize = "cover";
+bankImage.style.backgroundPosition = "center";
 board.appendChild(bankImage);
 
 let gameMode = 'local';
@@ -148,7 +150,6 @@ function startGame(mode) {
     initializePlayerElements();
     document.getElementById('rollDiceButton').style.display = 'block';
     initPlayersPosition();
-    document.getElementById("actionMessage").textContent = "";
     document.getElementById("gameOver").style.display = "none";
     gameActive = true;
     currentPlayerIndex = 0;
@@ -202,7 +203,6 @@ function rollDice() {
     setTimeout(() => {
         diceElement.classList.remove("rolling");
         diceElement.textContent = diceFaces[dice - 1];
-        document.getElementById("diceResult").textContent = `Dadu: ${dice}`;
 
         if (currentPlayer.inJail) {
             handleJailTurn(currentPlayer, dice);
@@ -305,7 +305,6 @@ function handleTileAction(player, playerIndex) {
     }
 
     showBubbleText(message); 
-    document.getElementById("actionMessage").textContent = message;
     updatePlayerStatus();
     updateTurnStatus();
 }
@@ -377,7 +376,6 @@ function aiTakeTurn() {
         setTimeout(() => {
             diceElement.classList.remove("rolling");
             diceElement.textContent = diceFaces[dice - 1];
-            document.getElementById("diceResult").textContent = `Dadu AI: ${dice}`;
 
             if (aiPlayer.inJail) {
                 handleJailTurn(aiPlayer, dice);
