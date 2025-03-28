@@ -139,6 +139,7 @@ function startGame(mode) {
     gameActive = true;
     currentPlayerIndex = 0;
     updateTurnStatus();
+    updateRollDiceButtonState(); 
 }
 
 function initializePlayers() {
@@ -195,7 +196,10 @@ function rollDice() {
             movePlayer(currentPlayerIndex);
             handleTileAction(currentPlayer, currentPlayerIndex);
         }
-        setTimeout(() => { diceElement.style.display = "none"; }, 500);
+        setTimeout(() => { 
+            diceElement.style.display = "none"; 
+            updateRollDiceButtonState(); 
+        }, 500);
     }, 1000);
 }
 
@@ -339,6 +343,7 @@ function updateTurnStatus() {
         currentPlayerIndex = (currentPlayerIndex + 1) % players.length;
     }
     document.getElementById("turnStatus").textContent = `Giliran ${players[currentPlayerIndex].name}!`;
+    updateRollDiceButtonState(); // Perbarui status tombol saat giliran berubah
     if (gameMode === 'ai' && currentPlayerIndex === 1) aiTakeTurn();
     checkGameOver();
 }
@@ -365,7 +370,10 @@ function aiTakeTurn() {
                 movePlayer(1);
                 handleTileAction(aiPlayer, 1);
             }
-            setTimeout(() => { diceElement.style.display = "none"; }, 500);
+            setTimeout(() => { 
+                diceElement.style.display = "none"; 
+                updateRollDiceButtonState(); 
+            }, 500);
         }, 1000); 
     }, 1000);
 }
@@ -378,6 +386,7 @@ function checkGameOver() {
         document.getElementById("gameOver").textContent = activePlayers.length === 1 ?
             `${activePlayers[0].name} menang!` : "Permainan berakhir tanpa pemenang!";
         document.getElementById("gameOver").style.display = "block";
+        updateRollDiceButtonState(); 
     }
 }
 
@@ -391,4 +400,15 @@ function updatePlayerStatus() {
         if (player.hasGetOutOfJailCard) text += " (Kartu Bebas)";
         statusDiv.innerHTML += `<div>${text}</div>`;
     });
+}
+
+function updateRollDiceButtonState() {
+    const rollDiceButton = document.getElementById("rollDiceButton");
+    if (!gameActive || (gameMode === 'ai' && currentPlayerIndex !== 0)) {
+        rollDiceButton.disabled = true; 
+        rollDiceButton.style.opacity = "0.5"; 
+    } else {
+        rollDiceButton.disabled = false; 
+        rollDiceButton.style.opacity = "1"; 
+    }
 }
