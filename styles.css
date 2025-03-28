@@ -223,27 +223,71 @@ body {
 }
 
 button {
-    display: block;
-    margin: 10px auto;
     padding: 10px 20px;
     font-size: 16px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
 }
 
-#actionMessage {
-    margin-top: 10px;
-    font-size: 16px;
+button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+button:hover:not(:disabled) {
+    background-color: #45a049;
+}
+
+.player-info-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.player-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.player-icon {
+    width: 60px;
+    height: 60px;
+    background-color: #f0f0f0;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 40px;
+    border: 2px solid #333;
+}
+
+.player1 .player-icon {
+    background-color: #ff4d4d; /* Merah untuk Player 1 */
+    color: white;
+}
+
+.player2 .player-icon {
+    background-color: #4d4dff; /* Biru untuk Player 2 atau AI */
+    color: white;
+}
+
+.turn-label {
+    font-size: 14px;
+    font-weight: bold;
+    margin-top: 5px;
     color: #333;
 }
 
-.player-status {
-    margin-top: 20px;
-    padding: 10px;
-    border: 1px solid #ccc;
-    background-color: #f9f9f9;
-    text-align: left;
-    max-width: 700px;
-    margin-left: auto;
-    margin-right: auto;
+.money-status {
+    font-size: 16px;
+    margin-top: 5px;
+    color: #333;
 }
 
 .property-label {
@@ -296,13 +340,4 @@ button {
     padding: 10px 20px;
     font-size: 16px;
     margin: 0 10px;
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-.game-over-buttons button:hover {
-    background-color: #45a049;
 }
