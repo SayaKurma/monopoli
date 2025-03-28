@@ -187,7 +187,7 @@ function rollDice() {
             handleTileAction(currentPlayer, currentPlayerIndex);
         }
         setTimeout(() => { diceElement.style.display = "none"; }, 500);
-    }, 1000); // Durasi animasi sesuai dengan CSS (1 detik)
+    }, 1000);
 }
 
 function movePlayer(playerIndex) {
@@ -245,6 +245,9 @@ function handleTileAction(player, playerIndex) {
                 player.money += sellPrice;
                 property.owner = null;
                 property.isAvailable = true;
+                const cell = path.find(c => c.dataset.pos == positions.indexOf(property));
+                const label = cell.querySelector(".property-label");
+                if (label) label.remove(); 
                 message = `${player.name} menjual ${property.name} seharga ${sellPrice}!`;
             } else {
                 message = `${player.name} tidak punya properti untuk dilelang.`;
@@ -252,8 +255,8 @@ function handleTileAction(player, playerIndex) {
             break;
         default:
             if (tile.price && tile.isAvailable) {
-                if (player.money >= tile.price && confirm(`Beli ${tile.name} seharga ${tile.price}?`)) {
-                    buyProperty(player, tile);
+                if (player.money >= tile.price && (gameMode === 'ai' && player.name === 'AI' ? Math.random() > 0.3 : confirm(`Beli ${tile.name} seharga ${tile.price}?`))) {
+                    buyProperty(player, tile, playerIndex);
                     message = `${player.name} membeli ${tile.name} seharga ${tile.price}!`;
                 } else {
                     message = `${player.name} tidak membeli ${tile.name}.`;
@@ -298,10 +301,18 @@ function handleJailTurn(player, dice) {
     updateTurnStatus();
 }
 
-function buyProperty(player, property) {
+function buyProperty(player, property, playerIndex) {
     player.money -= property.price;
     property.owner = player.name;
     property.isAvailable = false;
+
+    const cell = path.find(c => c.dataset.pos == positions.indexOf(property));
+    const label = document.createElement("div");
+    label.classList.add("property-label");
+    label.classList.add(player.name === "Player 1" ? "player1" : "player2");
+    label.textContent = `Sewa: ${property.rent}`;
+    const thead = cell.querySelector("thead");
+    thead.insertAdjacentElement("afterend", label); 
 }
 
 function checkBankruptcy(player) {
@@ -365,8 +376,7 @@ function updatePlayerStatus() {
     const statusDiv = document.getElementById("playerStatus");
     statusDiv.innerHTML = "";
     players.forEach(player => {
-        const owned = positions.filter(p => p.owner === player.name).map(p => p.name).join(", ");
-        let text = `${player.name}: Uang = ${player.money}, Properti = ${owned || "Tidak ada"}`;
+        let text = `${player.name}: Uang = ${player.money}`;
         if (player.inJail) text += ` (Penjara: ${player.jailTurns} giliran)`;
         if (player.bankrupt) text += " (Bangkrut)";
         if (player.hasGetOutOfJailCard) text += " (Kartu Bebas)";
