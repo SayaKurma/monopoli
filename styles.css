@@ -158,3 +158,45 @@ button {
         transform: translate(-50%, -50%) rotate(720deg) scale(1); 
     }
 }
+
+.property-label {
+    position: absolute;
+    top: 2px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 2px 5px;
+    font-size: 10px;
+    font-weight: bold;
+    border-radius: 3px;
+    z-index: 5;
+    opacity: 0; 
+    animation: fadeIn 0.5s ease forwards; 
+}
+
+@property-label.player1 {
+    background-color: yellow;
+    color: black;
+}
+
+@property-label.player2 {
+    background-color: red;
+    color: white;
+}
+
+.property.coklat .property-label { border: 1px solid white; }
+.property.cyan .property-label { border: 1px solid black; }
+.property.pink .property-label { border: 1px solid white; }
+.property.oren .property-label { border: 1px solid black; }
+.property.merah .property-label { border: 1px solid white; }
+.property.kuning .property-label { border: 1px solid black; }
+.property.hijau .property-label { border: 1px solid white; }
+.property.ungu .property-label { border: 1px solid white; }
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
