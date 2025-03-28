@@ -11,7 +11,7 @@ body {
     margin: 20px auto;
     width: 700px;
     height: 700px;
-    position: relative; 
+    position: relative;
 }
 
 .cell {
@@ -19,10 +19,9 @@ body {
     align-items: center;
     justify-content: center;
     border: 2px solid black;
-    background-color: lightgray;
     font-size: 12px;
     text-align: center;
-    position: relative; 
+    position: relative;
 }
 
 .corner {
@@ -35,15 +34,45 @@ body {
     border: none;
 }
 
-.dice-container {
-    margin-top: 20px;
+.special-tile {
+    background-color: white;
+    font-weight: bold;
+    padding: 5px;
 }
 
-.turn-status {
-    margin-top: 20px;
-    font-size: 18px;
+.property-table {
+    width: 100%;
+    height: 100%;
+    border-collapse: collapse;
+}
+
+.property-table thead {
+    color: white;
     font-weight: bold;
 }
+
+.property-table tbody {
+    color: black;
+    font-size: 10px;
+}
+
+/* Warna properti dan header */
+.property.coklat thead { background-color: #5c4033; }
+.property.coklat tbody { background-color: #8b5a2b; }
+.property.cyan thead { background-color: #008080; }
+.property.cyan tbody { background-color: #00ced1; }
+.property.pink thead { background-color: #c71585; }
+.property.pink tbody { background-color: #ff69b4; }
+.property.oren thead { background-color: #ff8c00; }
+.property.oren tbody { background-color: #ffa500; }
+.property.merah thead { background-color: #8b0000; }
+.property.merah tbody { background-color: #ff0000; }
+.property.kuning thead { background-color: #daa520; }
+.property.kuning tbody { background-color: #ffff00; }
+.property.hijau thead { background-color: #006400; }
+.property.hijau tbody { background-color: #00ff00; }
+.property.ungu thead { background-color: #4b0082; }
+.property.ungu tbody { background-color: #800080; }
 
 .player {
     position: absolute;
@@ -56,60 +85,10 @@ body {
     color: white;
     font-size: 14px;
     z-index: 10;
-    top: 50%; 
-    left: 50%; 
-    transform: translate(-50%, -50%); 
-    transition: all 0.5s ease; 
-}
-
-.property {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    font-weight: bold;
-    padding: 5px;
-}
-
-.property.red { background-color: red; }
-.property.blue { background-color: blue; }
-.property.green { background-color: green; }
-.property.yellow { background-color: yellow; }
-.property.purple { background-color: purple; }
-.property.orange { background-color: orange; }
-.property.pink { background-color: pink; }
-.property.brown { background-color: brown; }
-.property.grey { background-color: grey; }
-.property.cyan { background-color: cyan; }
-.property.maroon { background-color: maroon; }
-.property.olive { background-color: olive; }
-.property.gold { background-color: gold; }
-.property.silver { background-color: silver; }
-.property.teal { background-color: teal; }
-.property.navy { background-color: navy; }
-.property.magenta { background-color: magenta; }
-.property.beige { background-color: beige; }
-.property.coral { background-color: coral; }
-.property.limegreen { background-color: limegreen; }
-.property.orchid { background-color: orchid; }
-.property.plum { background-color: plum; }
-.property.peru { background-color: peru; }
-.property.slateblue { background-color: slateblue; }
-.property.chocolate { background-color: chocolate; }
-.property.crimson { background-color: crimson; }
-.property.darkcyan { background-color: darkcyan; }
-.property.dimgray { background-color: dimgray; }
-.property.firebrick { background-color: firebrick; }
-.property.indigo { background-color: indigo; }
-.property.goldenrod { background-color: goldenrod; }
-.property.lime { background-color: lime; }
-.property.tan { background-color: tan; }
-.property.violet { background-color: violet; }
-
-.special-tile {
-    background-color: lightblue;
-    font-weight: bold;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    transition: all 0.5s ease;
 }
 
 #info {
@@ -139,10 +118,6 @@ button {
     max-width: 700px;
     margin-left: auto;
     margin-right: auto;
-}
-
-.player-status div {
-    margin: 5px 0;
 }
 
 .dice {
