@@ -268,12 +268,12 @@ button:hover:not(:disabled) {
 }
 
 .player1 .player-icon {
-    background-color: #ff4d4d; /* Merah untuk Player 1 */
+    background-color: #ff4d4d; 
     color: white;
 }
 
 .player2 .player-icon {
-    background-color: #4d4dff; /* Biru untuk Player 2 atau AI */
+    background-color: #4d4dff; 
     color: white;
 }
 
