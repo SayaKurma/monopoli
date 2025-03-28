@@ -10,7 +10,7 @@ const positions = [
     { x: 4, y: 10, name: "Tiket", cost: 50, symbol: "✈️" },
     { x: 5, y: 10, name: "KAI", cost: 100, symbol: "🚂" },
     { x: 6, y: 10, name: "Hanoi", color: "cyan", price: 100, rent: 10, isAvailable: true, owner: null },
-    { x: 7, y: 10, name: "Kesempatan", symbol: "🎲" },
+    { x: 7, y: 10, name: "Kesempatan", symbol: "❓" },
     { x: 8, y: 10, name: "Dhaka", color: "cyan", price: 120, rent: 12, isAvailable: true, owner: null },
     { x: 9, y: 10, name: "Manila", color: "cyan", price: 140, rent: 14, isAvailable: true, owner: null },
     { x: 10, y: 10, name: "Masuk Penjara" },
@@ -25,7 +25,7 @@ const positions = [
     { x: 10, y: 1, name: "Manama", color: "oren", price: 260, rent: 26, isAvailable: true, owner: null },
     { x: 10, y: 0, name: "Bebas Parkir" },
     { x: 9, y: 0, name: "Tehran", color: "merah", price: 280, rent: 28, isAvailable: true, owner: null },
-    { x: 8, y: 0, name: "Kesempatan", symbol: "🎲" },
+    { x: 8, y: 0, name: "Kesempatan", symbol: "❓" },
     { x: 7, y: 0, name: "Bagdad", color: "merah", price: 300, rent: 30, isAvailable: true, owner: null },
     { x: 6, y: 0, name: "Riyadh", color: "merah", price: 320, rent: 32, isAvailable: true, owner: null },
     { x: 5, y: 0, name: "KAI", cost: 100, symbol: "🚂" },
@@ -39,7 +39,7 @@ const positions = [
     { x: 0, y: 3, name: "Apes", symbol: "💀" },
     { x: 0, y: 4, name: "Seoul", color: "hijau", price: 440, rent: 44, isAvailable: true, owner: null },
     { x: 0, y: 5, name: "KAI", cost: 100, symbol: "🚂" },
-    { x: 0, y: 6, name: "Kesempatan", symbol: "🎲" },
+    { x: 0, y: 6, name: "Kesempatan", symbol: "❓" },
     { x: 0, y: 7, name: "Tokyo", color: "ungu", price: 460, rent: 46, isAvailable: true, owner: null },
     { x: 0, y: 8, name: "Tiket VIP", cost: 150, symbol: "🎟️" },
     { x: 0, y: 9, name: "Jakarta", color: "ungu", price: 500, rent: 50, isAvailable: true, owner: null }
@@ -180,7 +180,7 @@ function rollDice() {
         document.getElementById("diceResult").textContent = `Dadu: ${dice}`;
 
         if (currentPlayer.inJail) {
-            handleJailTurn(currentPlayer);
+            handleJailTurn(currentPlayer, dice);
         } else {
             currentPlayer.position = (currentPlayer.position + dice) % positions.length;
             movePlayer(currentPlayerIndex);
@@ -278,13 +278,22 @@ function handleTileAction(player, playerIndex) {
     updateTurnStatus();
 }
 
-function handleJailTurn(player) {
-    player.jailTurns -= 1;
-    if (player.jailTurns <= 0) {
+function handleJailTurn(player, dice) {
+    if (dice === 6) {
         player.inJail = false;
-        document.getElementById("actionMessage").textContent = `${player.name} keluar dari penjara!`;
+        player.jailTurns = 0;
+        player.position = (player.position + dice) % positions.length;
+        movePlayer(players.indexOf(player));
+        document.getElementById("actionMessage").textContent = `${player.name} melempar dadu 6 dan keluar dari penjara! Bergerak ${dice} langkah.`;
+        handleTileAction(player, players.indexOf(player));
     } else {
-        document.getElementById("actionMessage").textContent = `${player.name} di penjara, sisa ${player.jailTurns} giliran.`;
+        player.jailTurns -= 1;
+        if (player.jailTurns <= 0) {
+            player.inJail = false;
+            document.getElementById("actionMessage").textContent = `${player.name} keluar dari penjara setelah melempar dadu.`;
+        } else {
+            document.getElementById("actionMessage").textContent = `${player.name} melempar dadu ${dice}, tetap di penjara. Sisa ${player.jailTurns} giliran.`;
+        }
     }
     updateTurnStatus();
 }
@@ -330,7 +339,7 @@ function aiTakeTurn() {
             document.getElementById("diceResult").textContent = `Dadu AI: ${dice}`;
 
             if (aiPlayer.inJail) {
-                handleJailTurn(aiPlayer);
+                handleJailTurn(aiPlayer, dice);
             } else {
                 aiPlayer.position = (aiPlayer.position + dice) % positions.length;
                 movePlayer(1);
