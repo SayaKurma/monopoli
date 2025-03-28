@@ -187,7 +187,7 @@ function rollDice() {
             handleTileAction(currentPlayer, currentPlayerIndex);
         }
         setTimeout(() => { diceElement.style.display = "none"; }, 500);
-    }, 1000);
+    }, 1000); // Durasi animasi sesuai dengan CSS (1 detik)
 }
 
 function movePlayer(playerIndex) {
@@ -346,7 +346,7 @@ function aiTakeTurn() {
                 handleTileAction(aiPlayer, 1);
             }
             setTimeout(() => { diceElement.style.display = "none"; }, 500);
-        }, 1000);
+        }, 1000); 
     }, 1000);
 }
 
