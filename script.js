@@ -3,46 +3,46 @@ const path = [];
 let playerElements = [];
 
 const positions = [
-    { x: 0, y: 10, name: "Start" }, 
-    { x: 1, y: 10, name: "Pyongyang", color: "dimgray", price: 200, rent: 20, isAvailable: true, owner: null }, 
-    { x: 2, y: 10, name: "Tehran", color: "firebrick", price: 230, rent: 23, isAvailable: true, owner: null }, 
-    { x: 3, y: 10, name: "Tokyo", color: "goldenrod", price: 300, rent: 30, isAvailable: true, owner: null },
-    { x: 4, y: 10, name: "Hanoi", color: "orange", price: 250, rent: 25, isAvailable: true, owner: null }, 
-    { x: 5, y: 10, name: "Delhi", color: "pink", price: 270, rent: 27, isAvailable: true, owner: null }, 
-    { x: 6, y: 10, name: "Seoul", color: "blue", price: 400, rent: 40, isAvailable: true, owner: null }, 
-    { x: 7, y: 10, name: "Kuala Lumpur", color: "purple", price: 350, rent: 35, isAvailable: true, owner: null },
-    { x: 8, y: 10, name: "Manila", color: "grey", price: 260, rent: 26, isAvailable: true, owner: null }, 
-    { x: 9, y: 10, name: "Dili", color: "olive", price: 120, rent: 12, isAvailable: true, owner: null }, 
+    { x: 0, y: 10, name: "Start" },
+    { x: 1, y: 10, name: "Dili", color: "coklat", price: 60, rent: 6, isAvailable: true, owner: null },
+    { x: 2, y: 10, name: "Apes", symbol: "💀" },
+    { x: 3, y: 10, name: "Kabul", color: "coklat", price: 80, rent: 8, isAvailable: true, owner: null },
+    { x: 4, y: 10, name: "Tiket", cost: 50, symbol: "✈️" },
+    { x: 5, y: 10, name: "KAI", cost: 100, symbol: "🚂" },
+    { x: 6, y: 10, name: "Hanoi", color: "cyan", price: 100, rent: 10, isAvailable: true, owner: null },
+    { x: 7, y: 10, name: "Kesempatan", symbol: "🎲" },
+    { x: 8, y: 10, name: "Dhaka", color: "cyan", price: 120, rent: 12, isAvailable: true, owner: null },
+    { x: 9, y: 10, name: "Manila", color: "cyan", price: 140, rent: 14, isAvailable: true, owner: null },
     { x: 10, y: 10, name: "Masuk Penjara" },
-    { x: 10, y: 9, name: "Tiket" }, 
-    { x: 10, y: 8, name: "Phnom Penh", color: "gold", price: 180, rent: 18, isAvailable: true, owner: null }, 
-    { x: 10, y: 7, name: "Beijing", color: "green", price: 450, rent: 45, isAvailable: true, owner: null }, 
-    { x: 10, y: 6, name: "Manama", color: "beige", price: 330, rent: 33, isAvailable: true, owner: null },
-    { x: 10, y: 5, name: "Damaskus", color: "cyan", price: 150, rent: 15, isAvailable: true, owner: null }, 
-    { x: 10, y: 4, name: "PLN", cost: 50 },
-    { x: 10, y: 3, name: "Kathmandu", color: "silver", price: 220, rent: 22, isAvailable: true, owner: null }, 
-    { x: 10, y: 2, name: "Vientiane", color: "brown", price: 200, rent: 20, isAvailable: true, owner: null },
-    { x: 10, y: 1, name: "PDAM", cost: 50 },
+    { x: 10, y: 9, name: "Delhi", color: "pink", price: 160, rent: 16, isAvailable: true, owner: null },
+    { x: 10, y: 8, name: "PLN", cost: 75, symbol: "⚡" },
+    { x: 10, y: 7, name: "Bangkok", color: "pink", price: 180, rent: 18, isAvailable: true, owner: null },
+    { x: 10, y: 6, name: "Beirut", color: "pink", price: 200, rent: 20, isAvailable: true, owner: null },
+    { x: 10, y: 5, name: "KAI", cost: 100, symbol: "🚂" },
+    { x: 10, y: 4, name: "Tashkent", color: "oren", price: 220, rent: 22, isAvailable: true, owner: null },
+    { x: 10, y: 3, name: "Apes", symbol: "💀" },
+    { x: 10, y: 2, name: "Astana", color: "oren", price: 240, rent: 24, isAvailable: true, owner: null },
+    { x: 10, y: 1, name: "Manama", color: "oren", price: 260, rent: 26, isAvailable: true, owner: null },
     { x: 10, y: 0, name: "Bebas Parkir" },
-    { x: 9, y: 0, name: "Thimphu", color: "navy", price: 160, rent: 16, isAvailable: true, owner: null }, 
-    { x: 8, y: 0, name: "Ulaanbaatar", color: "magenta", price: 140, rent: 14, isAvailable: true, owner: null }, 
-    { x: 7, y: 0, name: "Bangkok", color: "yellow", price: 350, rent: 35, isAvailable: true, owner: null }, 
-    { x: 6, y: 0, name: "Dhaka", color: "lime", price: 280, rent: 28, isAvailable: true, owner: null },
-    { x: 5, y: 0, name: "Islamabad", color: "maroon", price: 200, rent: 20, isAvailable: true, owner: null }, 
-    { x: 4, y: 0, name: "Bea Cukai", tax: 100 },
-    { x: 3, y: 0, name: "Dushanbe", color: "coral", price: 210, rent: 21, isAvailable: true, owner: null }, 
-    { x: 2, y: 0, name: "Ashgabat", color: "violet", price: 240, rent: 24, isAvailable: true, owner: null },
-    { x: 0, y: 0, name: "Kesempatan" }, 
-    { x: 1, y: 0, name: "Sana'a", color: "red", price: 230, rent: 23, isAvailable: true, owner: null },
-    { x: 0, y: 1, name: "Yerevan", color: "orchid", price: 130, rent: 13, isAvailable: true, owner: null }, 
-    { x: 0, y: 2, name: "Tbilisi", color: "plum", price: 240, rent: 24, isAvailable: true, owner: null }, 
-    { x: 0, y: 3, name: "Baku", color: "peru", price: 260, rent: 26, isAvailable: true, owner: null }, 
-    { x: 0, y: 4, name: "Tashkent", color: "tan", price: 190, rent: 19, isAvailable: true, owner: null },
-    { x: 0, y: 5, name: "Jakarta", color: "purple", price: 300, rent: 30, isAvailable: true, owner: null }, 
-    { x: 0, y: 6, name: "Amman", color: "chocolate", price: 290, rent: 29, isAvailable: true, owner: null }, 
-    { x: 0, y: 7, name: "Doha", color: "crimson", price: 320, rent: 32, isAvailable: true, owner: null }, 
-    { x: 0, y: 8, name: "Baghdad", color: "lightblue", price: 270, rent: 27, isAvailable: true, owner: null },
-    { x: 0, y: 9, name: "Jerusalem", color: "indigo", price: 270, rent: 27, isAvailable: true, owner: null }
+    { x: 9, y: 0, name: "Tehran", color: "merah", price: 280, rent: 28, isAvailable: true, owner: null },
+    { x: 8, y: 0, name: "Kesempatan", symbol: "🎲" },
+    { x: 7, y: 0, name: "Bagdad", color: "merah", price: 300, rent: 30, isAvailable: true, owner: null },
+    { x: 6, y: 0, name: "Riyadh", color: "merah", price: 320, rent: 32, isAvailable: true, owner: null },
+    { x: 5, y: 0, name: "KAI", cost: 100, symbol: "🚂" },
+    { x: 4, y: 0, name: "Amman", color: "kuning", price: 340, rent: 34, isAvailable: true, owner: null },
+    { x: 3, y: 0, name: "Doha", color: "kuning", price: 360, rent: 36, isAvailable: true, owner: null },
+    { x: 2, y: 0, name: "PDAM", cost: 75, symbol: "🚰" },
+    { x: 0, y: 0, name: "Lelang", symbol: "🔨" },
+    { x: 1, y: 0, name: "Male", color: "kuning", price: 380, rent: 38, isAvailable: true, owner: null },
+    { x: 0, y: 1, name: "Beijing", color: "hijau", price: 400, rent: 40, isAvailable: true, owner: null },
+    { x: 0, y: 2, name: "Taipei", color: "hijau", price: 420, rent: 42, isAvailable: true, owner: null },
+    { x: 0, y: 3, name: "Apes", symbol: "💀" },
+    { x: 0, y: 4, name: "Seoul", color: "hijau", price: 440, rent: 44, isAvailable: true, owner: null },
+    { x: 0, y: 5, name: "KAI", cost: 100, symbol: "🚂" },
+    { x: 0, y: 6, name: "Kesempatan", symbol: "🎲" },
+    { x: 0, y: 7, name: "Tokyo", color: "ungu", price: 460, rent: 46, isAvailable: true, owner: null },
+    { x: 0, y: 8, name: "Tiket VIP", cost: 150, symbol: "🎟️" },
+    { x: 0, y: 9, name: "Jakarta", color: "ungu", price: 500, rent: 50, isAvailable: true, owner: null }
 ];
 
 for (let y = 0; y < 11; y++) {
@@ -52,11 +52,18 @@ for (let y = 0; y < 11; y++) {
 
         const tile = positions.find(p => p.x === x && p.y === y);
         if (tile) {
-            div.textContent = tile.name || "⏳";
             div.dataset.pos = positions.indexOf(tile);
             if (tile.color) {
-                div.style.backgroundColor = tile.color;
-                div.textContent += `\nHarga: ${tile.price}`;
+                div.classList.add("property", tile.color);
+                div.innerHTML = `
+                    <table class="property-table">
+                        <thead><tr><td>Harga: ${tile.price}</td></tr></thead>
+                        <tbody><tr><td>${tile.name}</td></tr></tbody>
+                    </table>
+                `;
+            } else {
+                div.classList.add("special-tile");
+                div.textContent = tile.symbol ? `${tile.symbol} ${tile.name}` : tile.name;
             }
             path.push(div);
         } else {
@@ -76,64 +83,46 @@ let players = [];
 let currentPlayerIndex = 0;
 let gameActive = false;
 
-const diceFaces = [
-    "⚀", 
-    "⚁", 
-    "⚂", 
-    "⚃", 
-    "⚄", 
-    "⚅"  
-];
+const diceFaces = ["⚀", "⚁", "⚂", "⚃", "⚄", "⚅"];
 
 const chanceEffects = [
-    function(player) {
-        player.money += 170;
-        return `${player.name} mendapat hibah uang sebesar 170 dari Bank!`;
-    },
-    function(player) {
+    (player) => { player.money += 170; return `${player.name} mendapat hibah uang 170 dari Bank!`; },
+    (player) => {
         if (player.money >= 130) {
             player.money -= 130;
             const opponent = players.find(p => p.name !== player.name && !p.bankrupt);
             if (opponent) {
                 opponent.money += 130;
                 return `${player.name} mendonasikan 130 kepada ${opponent.name}.`;
-            } else {
-                return `${player.name} tidak memiliki lawan untuk didonasikan.`;
             }
-        } else {
-            return `${player.name} tidak memiliki cukup uang untuk mendonasikan 130.`;
+            return `${player.name} tidak memiliki lawan untuk didonasikan.`;
         }
+        return `${player.name} tidak memiliki cukup uang untuk mendonasikan 130.`;
     },
-    function(player) {
-        player.hasGetOutOfJailCard = true;
-        return `${player.name} mendapatkan kartu bebas penjara satu kali!`;
-    },
-    function(player, playerIndex) {
+    (player) => { player.hasGetOutOfJailCard = true; return `${player.name} mendapatkan kartu bebas penjara!`; },
+    (player, playerIndex) => {
         player.position = 0;
         movePlayer(playerIndex);
-        player.money += 150; 
+        player.money += 150;
         return `${player.name} maju ke Start dan mendapat 150!`;
-    },
-    function(player, playerIndex) {
-        const availableProperties = positions.filter(p => p.isAvailable && p.price);
-        if (availableProperties.length > 0) {
-            const randomProperty = availableProperties[Math.floor(Math.random() * availableProperties.length)];
-            player.position = positions.indexOf(randomProperty);
-            movePlayer(playerIndex);
-            return `${player.name} mendarat di ${randomProperty.name}.`;
-        } else {
-            return `Tidak ada properti kosong yang tersedia.`;
-        }
     }
+];
+
+const apesEffects = [
+    (player) => { player.money -= 100; return `${player.name} kehilangan 100 karena apes!`; },
+    (player) => {
+        player.inJail = true;
+        player.jailTurns = 2;
+        player.position = positions.findIndex(t => t.name === "Masuk Penjara");
+        return `${player.name} masuk penjara selama 2 giliran karena apes!`;
+    },
+    (player) => { player.money -= 50; return `${player.name} membayar denda 50 karena apes!`; }
 ];
 
 function startGame(mode) {
     gameMode = mode;
     initializePlayers();
     initializePlayerElements();
-    if (gameMode === 'ai') {
-        initializeAI();
-    }
     document.getElementById('rollDiceButton').style.display = 'block';
     initPlayersPosition();
     document.getElementById("actionMessage").textContent = "";
@@ -166,9 +155,6 @@ function initializePlayerElements() {
     });
 }
 
-function initializeAI() {
-}
-
 function initPlayersPosition() {
     players.forEach((player, index) => {
         const startCell = path.find(cell => cell.dataset.pos == 0);
@@ -179,20 +165,10 @@ function initPlayersPosition() {
 }
 
 function rollDice() {
-    if (!gameActive) {
-        alert("Permainan sudah selesai!");
-        return;
-    }
-    if (gameMode === 'ai' && currentPlayerIndex !== 0) {
-        alert("Tunggu giliranmu!");
-        return;
-    }
-    if (players[currentPlayerIndex].bankrupt) {
-        alert("Pemain ini bangkrut!");
-        return;
-    }
-
+    if (!gameActive || (gameMode === 'ai' && currentPlayerIndex !== 0)) return;
     const currentPlayer = players[currentPlayerIndex];
+    if (currentPlayer.bankrupt) return;
+
     const diceElement = document.getElementById("dice");
     diceElement.style.display = "block";
     diceElement.classList.add("rolling");
@@ -200,28 +176,18 @@ function rollDice() {
     let dice = Math.floor(Math.random() * 6) + 1;
     setTimeout(() => {
         diceElement.classList.remove("rolling");
-        diceElement.textContent = diceFaces[dice - 1]; 
+        diceElement.textContent = diceFaces[dice - 1];
         document.getElementById("diceResult").textContent = `Dadu: ${dice}`;
 
         if (currentPlayer.inJail) {
-            currentPlayer.jailTurns -= 1;
-            if (currentPlayer.jailTurns <= 0) {
-                currentPlayer.inJail = false;
-                document.getElementById("actionMessage").textContent = `${currentPlayer.name} keluar dari penjara dan bisa bermain normal.`;
-            } else {
-                document.getElementById("actionMessage").textContent = `${currentPlayer.name} sedang di penjara, melewatkan giliran. Sisa giliran di penjara: ${currentPlayer.jailTurns}.`;
-            }
-            updateTurnStatus();
+            handleJailTurn(currentPlayer);
         } else {
             currentPlayer.position = (currentPlayer.position + dice) % positions.length;
             movePlayer(currentPlayerIndex);
             handleTileAction(currentPlayer, currentPlayerIndex);
-            updateTurnStatus();
         }
-        setTimeout(() => {
-            diceElement.style.display = "none"; 
-        }, 500);
-    }, 1000); 
+        setTimeout(() => { diceElement.style.display = "none"; }, 500);
+    }, 1000);
 }
 
 function movePlayer(playerIndex) {
@@ -236,98 +202,122 @@ function movePlayer(playerIndex) {
 
 function handleTileAction(player, playerIndex) {
     if (player.bankrupt) return;
-
     const tile = positions[player.position];
     let message = "";
 
-    if (tile.name === "Masuk Penjara") {
-        if (player.hasGetOutOfJailCard) {
-            player.hasGetOutOfJailCard = false;
-            message = `${player.name} menggunakan kartu bebas penjara dan tidak masuk penjara!`;
-        } else {
-            player.inJail = true;
-            player.jailTurns = 3;
-            player.position = positions.findIndex(t => t.name === "Masuk Penjara");
-            movePlayer(playerIndex);
-            message = `${player.name} masuk penjara dan harus melewatkan 3 giliran!`;
-        }
-    } else if (tile.name === "Kesempatan") {
-        const randomEffectIndex = Math.floor(Math.random() * chanceEffects.length);
-        const effectFunction = chanceEffects[randomEffectIndex];
-        message = effectFunction(player, playerIndex);
-        if (randomEffectIndex === 3 || randomEffectIndex === 4) {
-            handleTileAction(player, playerIndex); 
-        }
-    } else if (tile.name === "Start") {
-        player.money += 150;
-        message = `${player.name} mendarat di Start dan mendapat 150!`;
-    } else if (tile.tax) {
-        player.money -= tile.tax;
-        checkBankruptcy(player);
-        message = `${player.name} membayar pajak ${tile.tax} di Bea Cukai.`;
-    } else if (tile.cost) {
-        player.money -= tile.cost;
-        checkBankruptcy(player);
-        message = `${player.name} membayar ${tile.cost} untuk ${tile.name}.`;
-    } else if (tile.price && tile.isAvailable) {
-        if (player.money >= tile.price) {
-            if (gameMode === 'local' || (gameMode === 'ai' && playerIndex === 0)) {
-                if (confirm(`Apakah Anda ingin membeli ${tile.name} seharga ${tile.price}?`)) {
+    switch (tile.name) {
+        case "Masuk Penjara":
+            if (player.hasGetOutOfJailCard) {
+                player.hasGetOutOfJailCard = false;
+                message = `${player.name} menggunakan kartu bebas penjara!`;
+            } else {
+                player.inJail = true;
+                player.jailTurns = 3;
+                player.position = positions.findIndex(t => t.name === "Masuk Penjara");
+                movePlayer(playerIndex);
+                message = `${player.name} masuk penjara selama 3 giliran!`;
+            }
+            break;
+        case "Kesempatan":
+            message = chanceEffects[Math.floor(Math.random() * chanceEffects.length)](player, playerIndex);
+            break;
+        case "Apes":
+            message = apesEffects[Math.floor(Math.random() * apesEffects.length)](player);
+            break;
+        case "Start":
+            player.money += 150;
+            message = `${player.name} mendarat di Start dan mendapat 150!`;
+            break;
+        case "Tiket":
+        case "KAI":
+        case "PLN":
+        case "PDAM":
+        case "Tiket VIP":
+            player.money -= tile.cost;
+            checkBankruptcy(player);
+            message = `${player.name} membayar ${tile.cost} untuk ${tile.name}.`;
+            break;
+        case "Lelang":
+            const owned = positions.filter(p => p.owner === player.name && p.price);
+            if (owned.length > 0) {
+                const property = owned[Math.floor(Math.random() * owned.length)];
+                const sellPrice = Math.floor(property.price * 1.15);
+                player.money += sellPrice;
+                property.owner = null;
+                property.isAvailable = true;
+                message = `${player.name} menjual ${property.name} seharga ${sellPrice}!`;
+            } else {
+                message = `${player.name} tidak punya properti untuk dilelang.`;
+            }
+            break;
+        default:
+            if (tile.price && tile.isAvailable) {
+                if (player.money >= tile.price && confirm(`Beli ${tile.name} seharga ${tile.price}?`)) {
                     buyProperty(player, tile);
                     message = `${player.name} membeli ${tile.name} seharga ${tile.price}!`;
                 } else {
-                    message = `${player.name} memilih untuk tidak membeli ${tile.name}.`;
+                    message = `${player.name} tidak membeli ${tile.name}.`;
+                }
+            } else if (tile.price && tile.owner && tile.owner !== player.name) {
+                const owner = players.find(p => p.name === tile.owner);
+                if (!owner.bankrupt && player.money >= tile.rent) {
+                    player.money -= tile.rent;
+                    owner.money += tile.rent;
+                    message = `${player.name} membayar sewa ${tile.rent} ke ${tile.owner}.`;
+                } else {
+                    checkBankruptcy(player);
+                    message = `${player.name} bangkrut karena tidak bisa bayar sewa ${tile.rent}.`;
                 }
             } else {
-                buyProperty(player, tile);
-                message = `${player.name} membeli ${tile.name} seharga ${tile.price}!`;
+                message = `${player.name} mendarat di ${tile.name}.`;
             }
-        } else {
-            message = `${player.name} tidak punya cukup uang untuk membeli ${tile.name}.`;
-        }
-    } else if (tile.price && !tile.isAvailable && tile.owner !== player.name) {
-        const owner = players.find(p => p.name === tile.owner);
-        if (!owner.bankrupt && player.money >= tile.rent) {
-            player.money -= tile.rent;
-            owner.money += tile.rent;
-            message = `${player.name} membayar sewa ${tile.rent} ke ${tile.owner} untuk ${tile.name}.`;
-        } else if (!owner.bankrupt) {
-            player.money -= tile.rent;
-            checkBankruptcy(player);
-            message = `${player.name} tidak punya cukup uang untuk membayar sewa ${tile.rent} di ${tile.name}.`;
-        }
-    } else {
-        message = `${player.name} mendarat di ${tile.name}.`;
     }
 
     document.getElementById("actionMessage").textContent = message;
     updatePlayerStatus();
+    updateTurnStatus();
+}
+
+function handleJailTurn(player) {
+    player.jailTurns -= 1;
+    if (player.jailTurns <= 0) {
+        player.inJail = false;
+        document.getElementById("actionMessage").textContent = `${player.name} keluar dari penjara!`;
+    } else {
+        document.getElementById("actionMessage").textContent = `${player.name} di penjara, sisa ${player.jailTurns} giliran.`;
+    }
+    updateTurnStatus();
+}
+
+function buyProperty(player, property) {
+    player.money -= property.price;
+    property.owner = player.name;
+    property.isAvailable = false;
+}
+
+function checkBankruptcy(player) {
+    if (player.money < 0) {
+        player.bankrupt = true;
+        playerElements[players.indexOf(player)].style.display = "none";
+        document.getElementById("actionMessage").textContent = `${player.name} bangkrut!`;
+    }
 }
 
 function updateTurnStatus() {
     if (!gameActive) return;
-
     currentPlayerIndex = (currentPlayerIndex + 1) % players.length;
-    while (players[currentPlayerIndex].bankrupt && currentPlayerIndex !== 0) {
+    while (players[currentPlayerIndex].bankrupt) {
         currentPlayerIndex = (currentPlayerIndex + 1) % players.length;
     }
-    const turnStatus = document.getElementById("turnStatus");
-    turnStatus.textContent = `Giliran ${players[currentPlayerIndex].name}!`;
-    if (gameMode === 'ai' && currentPlayerIndex === 1) {
-        aiTakeTurn();
-    }
+    document.getElementById("turnStatus").textContent = `Giliran ${players[currentPlayerIndex].name}!`;
+    if (gameMode === 'ai' && currentPlayerIndex === 1) aiTakeTurn();
     checkGameOver();
 }
 
 function aiTakeTurn() {
-    if (!gameActive) return;
-
     setTimeout(() => {
         const aiPlayer = players[1];
-        if (aiPlayer.bankrupt) {
-            updateTurnStatus();
-            return;
-        }
+        if (aiPlayer.bankrupt) return updateTurnStatus();
 
         const diceElement = document.getElementById("dice");
         diceElement.style.display = "block";
@@ -340,41 +330,15 @@ function aiTakeTurn() {
             document.getElementById("diceResult").textContent = `Dadu AI: ${dice}`;
 
             if (aiPlayer.inJail) {
-                aiPlayer.jailTurns -= 1;
-                if (aiPlayer.jailTurns <= 0) {
-                    aiPlayer.inJail = false;
-                    document.getElementById("actionMessage").textContent = `${aiPlayer.name} keluar dari penjara dan bisa bermain normal.`;
-                } else {
-                    document.getElementById("actionMessage").textContent = `${aiPlayer.name} sedang di penjara, melewatkan giliran. Sisa giliran di penjara: ${aiPlayer.jailTurns}.`;
-                }
-                updateTurnStatus();
+                handleJailTurn(aiPlayer);
             } else {
                 aiPlayer.position = (aiPlayer.position + dice) % positions.length;
                 movePlayer(1);
                 handleTileAction(aiPlayer, 1);
-                updateTurnStatus();
             }
-            setTimeout(() => {
-                diceElement.style.display = "none";
-            }, 500);
+            setTimeout(() => { diceElement.style.display = "none"; }, 500);
         }, 1000);
     }, 1000);
-}
-
-function buyProperty(player, property) {
-    if (player.money >= property.price) {
-        player.money -= property.price;
-        property.owner = player.name;
-        property.isAvailable = false;
-    }
-}
-
-function checkBankruptcy(player) {
-    if (player.money < 0) {
-        player.bankrupt = true;
-        playerElements[players.indexOf(player)].style.display = "none";
-        document.getElementById("actionMessage").textContent = `${player.name} bangkrut!`;
-    }
 }
 
 function checkGameOver() {
@@ -382,9 +346,9 @@ function checkGameOver() {
     if (activePlayers.length <= 1) {
         gameActive = false;
         document.getElementById("rollDiceButton").style.display = "none";
-        document.getElementById("gameOver").style.display = "block";
-        document.getElementById("gameOver").textContent = activePlayers.length === 1 ? 
+        document.getElementById("gameOver").textContent = activePlayers.length === 1 ?
             `${activePlayers[0].name} menang!` : "Permainan berakhir tanpa pemenang!";
+        document.getElementById("gameOver").style.display = "block";
     }
 }
 
@@ -392,18 +356,11 @@ function updatePlayerStatus() {
     const statusDiv = document.getElementById("playerStatus");
     statusDiv.innerHTML = "";
     players.forEach(player => {
-        const ownedProperties = positions.filter(p => p.owner === player.name).map(p => p.name).join(", ");
-        let statusText = `${player.name}: Uang = ${player.money}, Properti = ${ownedProperties || "Tidak ada"}`;
-        if (player.inJail) {
-            statusText += ` (Di penjara, sisa giliran: ${player.jailTurns})`;
-        } else if (player.bankrupt) {
-            statusText += " (Bangkrut)";
-        }
-        if (player.hasGetOutOfJailCard) {
-            statusText += " (Memiliki kartu bebas penjara)";
-        }
-        const p = document.createElement("div");
-        p.textContent = statusText;
-        statusDiv.appendChild(p);
+        const owned = positions.filter(p => p.owner === player.name).map(p => p.name).join(", ");
+        let text = `${player.name}: Uang = ${player.money}, Properti = ${owned || "Tidak ada"}`;
+        if (player.inJail) text += ` (Penjara: ${player.jailTurns} giliran)`;
+        if (player.bankrupt) text += " (Bangkrut)";
+        if (player.hasGetOutOfJailCard) text += " (Kartu Bebas)";
+        statusDiv.innerHTML += `<div>${text}</div>`;
     });
 }
