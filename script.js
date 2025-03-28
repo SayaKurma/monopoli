@@ -343,7 +343,7 @@ function updateTurnStatus() {
         currentPlayerIndex = (currentPlayerIndex + 1) % players.length;
     }
     document.getElementById("turnStatus").textContent = `Giliran ${players[currentPlayerIndex].name}!`;
-    updateRollDiceButtonState(); // Perbarui status tombol saat giliran berubah
+    updateRollDiceButtonState(); 
     if (gameMode === 'ai' && currentPlayerIndex === 1) aiTakeTurn();
     checkGameOver();
 }
