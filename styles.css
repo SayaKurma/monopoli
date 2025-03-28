@@ -56,7 +56,6 @@ body {
     font-size: 10px;
 }
 
-/* Warna properti dan header */
 .property.coklat thead { background-color: #5c4033; }
 .property.coklat tbody { background-color: #8b5a2b; }
 .property.cyan thead { background-color: #008080; }
