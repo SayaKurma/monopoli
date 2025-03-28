@@ -138,13 +138,23 @@ button {
 }
 
 .dice.rolling {
-    animation: rollDice 1s infinite;
+    animation: rollDice 1s linear; 
 }
 
 @keyframes rollDice {
-    0% { transform: translate(-50%, -50%) rotate(0deg); }
-    25% { transform: translate(-50%, -50%) rotate(90deg); }
-    50% { transform: translate(-50%, -50%) rotate(180deg); }
-    75% { transform: translate(-50%, -50%) rotate(270deg); }
-    100% { transform: translate(-50%, -50%) rotate(360deg); }
+    0% {
+        transform: translate(-50%, -50%) rotate(0deg) scale(1);
+    }
+    25% {
+        transform: translate(-50%, -50%) rotate(180deg) scale(1.1); 
+    }
+    50% {
+        transform: translate(-50%, -50%) rotate(360deg) scale(1);
+    }
+    75% {
+        transform: translate(-50%, -50%) rotate(540deg) scale(1.1); 
+    }
+    100% {
+        transform: translate(-50%, -50%) rotate(720deg) scale(1); 
+    }
 }
