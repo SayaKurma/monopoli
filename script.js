@@ -85,6 +85,48 @@ const diceFaces = [
     "⚅"  // 6
 ];
 
+const chanceEffects = [
+    function(player) {
+        player.money += 170;
+        return `${player.name} mendapat hibah uang sebesar 170 dari Bank!`;
+    },
+    function(player) {
+        if (player.money >= 130) {
+            player.money -= 130;
+            const opponent = players.find(p => p.name !== player.name && !p.bankrupt);
+            if (opponent) {
+                opponent.money += 130;
+                return `${player.name} mendonasikan 130 kepada ${opponent.name}.`;
+            } else {
+                return `${player.name} tidak memiliki lawan untuk didonasikan.`;
+            }
+        } else {
+            return `${player.name} tidak memiliki cukup uang untuk mendonasikan 130.`;
+        }
+    },
+    function(player) {
+        player.hasGetOutOfJailCard = true;
+        return `${player.name} mendapatkan kartu bebas penjara satu kali!`;
+    },
+    function(player, playerIndex) {
+        player.position = 0;
+        movePlayer(playerIndex);
+        player.money += 150; 
+        return `${player.name} maju ke Start dan mendapat 150!`;
+    },
+    function(player, playerIndex) {
+        const availableProperties = positions.filter(p => p.isAvailable && p.price);
+        if (availableProperties.length > 0) {
+            const randomProperty = availableProperties[Math.floor(Math.random() * availableProperties.length)];
+            player.position = positions.indexOf(randomProperty);
+            movePlayer(playerIndex);
+            return `${player.name} mendarat di ${randomProperty.name}.`;
+        } else {
+            return `Tidak ada properti kosong yang tersedia.`;
+        }
+    }
+];
+
 function startGame(mode) {
     gameMode = mode;
     initializePlayers();
@@ -103,11 +145,11 @@ function startGame(mode) {
 
 function initializePlayers() {
     players = [];
-    players.push({ name: 'Player 1', money: 1500, position: 0, bankrupt: false, inJail: false, jailTurns: 0 });
+    players.push({ name: 'Player 1', money: 1500, position: 0, bankrupt: false, inJail: false, jailTurns: 0, hasGetOutOfJailCard: false });
     if (gameMode === 'local') {
-        players.push({ name: 'Player 2', money: 1500, position: 0, bankrupt: false, inJail: false, jailTurns: 0 });
+        players.push({ name: 'Player 2', money: 1500, position: 0, bankrupt: false, inJail: false, jailTurns: 0, hasGetOutOfJailCard: false });
     } else if (gameMode === 'ai') {
-        players.push({ name: 'AI', money: 1500, position: 0, bankrupt: false, inJail: false, jailTurns: 0 });
+        players.push({ name: 'AI', money: 1500, position: 0, bankrupt: false, inJail: false, jailTurns: 0, hasGetOutOfJailCard: false });
     }
 }
 
@@ -157,7 +199,7 @@ function rollDice() {
 
     let dice = Math.floor(Math.random() * 6) + 1;
     setTimeout(() => {
-        diceElement.classList.remove("rolling");
+        diceElement.classList.remove "rolling");
         diceElement.textContent = diceFaces[dice - 1]; 
         document.getElementById("diceResult").textContent = `Dadu: ${dice}`;
 
@@ -199,20 +241,22 @@ function handleTileAction(player, playerIndex) {
     let message = "";
 
     if (tile.name === "Masuk Penjara") {
-        player.inJail = true;
-        player.jailTurns = 3;
-        player.position = positions.findIndex(t => t.name === "Masuk Penjara");
-        movePlayer(playerIndex);
-        message = `${player.name} masuk penjara dan harus melewatkan 3 giliran!`;
-    } else if (tile.name === "Kesempatan") {
-        const chance = Math.random();
-        if (chance < 0.5) {
-            player.money += 100;
-            message = `${player.name} mendapat 100 dari Kesempatan!`;
+        if (player.hasGetOutOfJailCard) {
+            player.hasGetOutOfJailCard = false;
+            message = `${player.name} menggunakan kartu bebas penjara dan tidak masuk penjara!`;
         } else {
-            player.money -= 100;
-            checkBankruptcy(player);
-            message = `${player.name} kehilangan 100 dari Kesempatan!`;
+            player.inJail = true;
+            player.jailTurns = 3;
+            player.position = positions.findIndex(t => t.name === "Masuk Penjara");
+            movePlayer(playerIndex);
+            message = `${player.name} masuk penjara dan harus melewatkan 3 giliran!`;
+        }
+    } else if (tile.name === "Kesempatan") {
+        const randomEffectIndex = Math.floor(Math.random() * chanceEffects.length);
+        const effectFunction = chanceEffects[randomEffectIndex];
+        message = effectFunction(player, playerIndex);
+        if (randomEffectIndex === 3 || randomEffectIndex === 4) {
+            handleTileAction(player, playerIndex); 
         }
     } else if (tile.name === "Start") {
         player.money += 150;
@@ -354,6 +398,9 @@ function updatePlayerStatus() {
             statusText += ` (Di penjara, sisa giliran: ${player.jailTurns})`;
         } else if (player.bankrupt) {
             statusText += " (Bangkrut)";
+        }
+        if (player.hasGetOutOfJailCard) {
+            statusText += " (Memiliki kartu bebas penjara)";
         }
         const p = document.createElement("div");
         p.textContent = statusText;
