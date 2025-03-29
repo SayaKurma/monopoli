@@ -173,11 +173,11 @@ function startGame(mode) {
 
 function initializePlayers() {
     players = [];
-    players.push({ name: 'Player 1', money: 2000, rentIncome: 1000, position: 0, inJail: false, jailTurns: 0, hasGetOutOfJailCard: false });
+    players.push({ name: 'Player 1', money: 2000, rentIncome: 1500, position: 0, inJail: false, jailTurns: 0, hasGetOutOfJailCard: false });
     if (gameMode === 'local') {
-        players.push({ name: 'Player 2', money: 2000, rentIncome: 1000, position: 0, inJail: false, jailTurns: 0, hasGetOutOfJailCard: false });
+        players.push({ name: 'Player 2', money: 2000, rentIncome: 1500, position: 0, inJail: false, jailTurns: 0, hasGetOutOfJailCard: false });
     } else if (gameMode === 'ai') {
-        players.push({ name: 'AI', money: 2000, rentIncome: 1000, position: 0, inJail: false, jailTurns: 0, hasGetOutOfJailCard: false });
+        players.push({ name: 'AI', money: 2000, rentIncome: 1500, position: 0, inJail: false, jailTurns: 0, hasGetOutOfJailCard: false });
         aiElo = getAiEloBasedOnPlayerElo(playerElo);
     }
 }
