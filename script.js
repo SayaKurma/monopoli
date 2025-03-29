@@ -207,7 +207,7 @@ function initPlayersPosition() {
 
 function updatePlayerIcons() {
     const player2Icon = document.getElementById("player2Icon");
-    player2Icon.innerHTML = gameMode === 'ai' ? '<span class="material-symbols-outlined">robot_2</span>' : '<span class="material-symbols-outlined">person</span>';
+    player2Icon.innerHTML = gameMode === 'ai' ? '<span class="material-symbols-outlined">robot</span>' : '<span class="material-symbols-outlined">person</span>';
 }
 
 function rollDice() {
