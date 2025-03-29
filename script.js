@@ -62,7 +62,7 @@ for (let y = 0; y < 11; y++) {
                     </table>
                 `;
             } else {
-                div.classList.add("special-tile");
+                div.classList.add("special-t ile");
                 div.textContent = tile.symbol ? `${tile.symbol} ${tile.name}` : tile.name;
             }
             path.push(div);
@@ -92,7 +92,7 @@ let gameActive = false;
 let roundCount = 0;
 const MAX_ROUNDS = 33;
 const WINNING_RENT_INCOME = 2000;
-let playerElo = 1200;
+let playerElo = localStorage.getItem('playerElo') ? parseInt(localStorage.getItem('playerElo')) : 1200;
 let aiElo = 1200;
 
 const diceFaces = ["⚀", "⚁", "⚂", "⚃", "⚄", "⚅"];
@@ -175,7 +175,7 @@ function initializePlayers() {
     players = [];
     players.push({ name: 'Player 1', money: 2000, rentIncome: 1500, position: 0, inJail: false, jailTurns: 0, hasGetOutOfJailCard: false });
     if (gameMode === 'local') {
-        players.push({ name: 'Player 2', money: 2000, rentIncome: 1500, position: 0, inJail: false, jailTurns: 0, hasGetOutOfJailCard: false });
+        players.push({ name: 'Player 2', money: 2000, rent Income: 1500, position: 0, inJail: false, jailTurns: 0, hasGetOutOfJailCard: false });
     } else if (gameMode === 'ai') {
         players.push({ name: 'AI', money: 2000, rentIncome: 1500, position: 0, inJail: false, jailTurns: 0, hasGetOutOfJailCard: false });
         aiElo = getAiEloBasedOnPlayerElo(playerElo);
@@ -188,7 +188,7 @@ function initializePlayerElements() {
     players.forEach((player, index) => {
         const playerDiv = document.createElement("div");
         playerDiv.classList.add("player");
-        playerDiv.innerHTML = index === 0 ? "♟" : "♞";
+        playerDiv.innerHTML = index === 0 ? "♟" : '<img src="robot.svg" alt="AI" style="width: 100%; height: 100%;">';
         playerDiv.style.backgroundColor = index === 0 ? "red" : "blue";
         const startCell = path.find(cell => cell.dataset.pos == 0);
         startCell.appendChild(playerDiv);
@@ -207,7 +207,7 @@ function initPlayersPosition() {
 
 function updatePlayerIcons() {
     const player2Icon = document.getElementById("player2Icon");
-    player2Icon.innerHTML = gameMode === 'ai' ? '<span class="material-symbols-outlined">robot</span>' : '<span class="material-symbols-outlined">person</span>';
+    player2Icon.innerHTML = gameMode === 'ai' ? '<img src="robot.svg" alt="AI" style="width: 100%; height: 100%;">' : '<span class="material-symbols-outlined">person</span>';
 }
 
 function rollDice() {
@@ -601,6 +601,7 @@ function updateElo(result) {
     } else { // Hard
         playerElo += result === 1 ? 15 : -5;
     }
+    localStorage.setItem('playerElo', playerElo);
     updateEloDisplay();
 }
 
@@ -618,7 +619,7 @@ function checkGameOver() {
     }
 
     if (roundCount >= MAX_ROUNDS) {
-        const totalScores = players.map(p => ({ name: p.name, total: p.money + p.rentIncome }));
+        const totalScores =players.map(p => ({ name: p.name, total: p.money + p.rentIncome }));
         const winner = totalScores.reduce((max, p) => p.total > max.total ? p : max, totalScores[0]);
         endGame(`Ronde habis! ${winner.name} menang dengan total ${winner.total} (Uang: ${players.find(p => p.name === winner.name).money}, Sewa: ${winner.total - players.find(p => p.name === winner.name).money})!`, winner.name);
         if (gameMode === 'ai') updateElo(winner.name === 'Player 1' ? 1 : 0);
