@@ -4,45 +4,45 @@ let playerElements = [];
 
 const positions = [
     { x: 0, y: 10, name: "Start" },
-    { x: 1, y: 10, name: "Dili", color: "coklat", price: 60, rent: 6, isAvailable: true, owner: null, upgradeLevel: 0 },
+    { x: 1, y: 10, name: "Dili", color: "coklat", price: 60, rent: 6, isAvailable: true, owner: null, upgradeLevel: 0, rentIncome: 0 },
     { x: 2, y: 10, name: "Apes", symbol: "💀" },
-    { x: 3, y: 10, name: "Kabul", color: "coklat", price: 80, rent: 8, isAvailable: true, owner: null, upgradeLevel: 0 },
+    { x: 3, y: 10, name: "Kabul", color: "coklat", price: 80, rent: 8, isAvailable: true, owner: null, upgradeLevel: 0, rentIncome: 0 },
     { x: 4, y: 10, name: "Tiket", cost: 50, symbol: "✈️" },
     { x: 5, y: 10, name: "KAI", cost: 100, symbol: "🚂" },
-    { x: 6, y: 10, name: "Hanoi", color: "cyan", price: 100, rent: 10, isAvailable: true, owner: null, upgradeLevel: 0 },
+    { x: 6, y: 10, name: "Hanoi", color: "cyan", price: 100, rent: 10, isAvailable: true, owner: null, upgradeLevel: 0, rentIncome: 0 },
     { x: 7, y: 10, name: "Kesempatan", symbol: "❓" },
-    { x: 8, y: 10, name: "Dhaka", color: "cyan", price: 120, rent: 12, isAvailable: true, owner: null, upgradeLevel: 0 },
-    { x: 9, y: 10, name: "Manila", color: "cyan", price: 140, rent: 14, isAvailable: true, owner: null, upgradeLevel: 0 },
+    { x: 8, y: 10, name: "Dhaka", color: "cyan", price: 120, rent: 12, isAvailable: true, owner: null, upgradeLevel: 0, rentIncome: 0 },
+    { x: 9, y: 10, name: "Manila", color: "cyan", price: 140, rent: 14, isAvailable: true, owner: null, upgradeLevel: 0, rentIncome: 0 },
     { x: 10, y: 10, name: "Masuk Penjara" },
-    { x: 10, y: 9, name: "Delhi", color: "pink", price: 160, rent: 16, isAvailable: true, owner: null, upgradeLevel: 0 },
+    { x: 10, y: 9, name: "Delhi", color: "pink", price: 160, rent: 16, isAvailable: true, owner: null, upgradeLevel: 0, rentIncome: 0 },
     { x: 10, y: 8, name: "PLN", cost: 75, symbol: "⚡" },
-    { x: 10, y: 7, name: "Bangkok", color: "pink", price: 180, rent: 18, isAvailable: true, owner: null, upgradeLevel: 0 },
-    { x: 10, y: 6, name: "Beirut", color: "pink", price: 200, rent: 20, isAvailable: true, owner: null, upgradeLevel: 0 },
+    { x: 10, y: 7, name: "Bangkok", color: "pink", price: 180, rent: 18, isAvailable: true, owner: null, upgradeLevel: 0, rentIncome: 0 },
+    { x: 10, y: 6, name: "Beirut", color: "pink", price: 200, rent: 20, isAvailable: true, owner: null, upgradeLevel: 0, rentIncome: 0 },
     { x: 10, y: 5, name: "KAI", cost: 100, symbol: "🚂" },
-    { x: 10, y: 4, name: "Tashkent", color: "oren", price: 220, rent: 22, isAvailable: true, owner: null, upgradeLevel: 0 },
+    { x: 10, y: 4, name: "Tashkent", color: "oren", price: 220, rent: 22, isAvailable: true, owner: null, upgradeLevel: 0, rentIncome: 0 },
     { x: 10, y: 3, name: "Apes", symbol: "💀" },
-    { x: 10, y: 2, name: "Astana", color: "oren", price: 240, rent: 24, isAvailable: true, owner: null, upgradeLevel: 0 },
-    { x: 10, y: 1, name: "Manama", color: "oren", price: 260, rent: 26, isAvailable: true, owner: null, upgradeLevel: 0 },
+    { x: 10, y: 2, name: "Astana", color: "oren", price: 240, rent: 24, isAvailable: true, owner: null, upgradeLevel: 0, rentIncome: 0 },
+    { x: 10, y: 1, name: "Manama", color: "oren", price: 260, rent: 26, isAvailable: true, owner: null, upgradeLevel: 0, rentIncome: 0 },
     { x: 10, y: 0, name: "Bebas Parkir" },
-    { x: 9, y: 0, name: "Tehran", color: "merah", price: 280, rent: 28, isAvailable: true, owner: null, upgradeLevel: 0 },
+    { x: 9, y: 0, name: "Tehran", color: "merah", price: 280, rent: 28, isAvailable: true, owner: null, upgradeLevel: 0, rentIncome: 0 },
     { x: 8, y: 0, name: "Kesempatan", symbol: "❓" },
-    { x: 7, y: 0, name: "Bagdad", color: "merah", price: 300, rent: 30, isAvailable: true, owner: null, upgradeLevel: 0 },
-    { x: 6, y: 0, name: "Riyadh", color: "merah", price: 320, rent: 32, isAvailable: true, owner: null, upgradeLevel: 0 },
+    { x: 7, y: 0, name: "Bagdad", color: "merah", price: 300, rent: 30, isAvailable: true, owner: null, upgradeLevel: 0, rentIncome: 0 },
+    { x: 6, y: 0, name: "Riyadh", color: "merah", price: 320, rent: 32, isAvailable: true, owner: null, upgradeLevel: 0, rentIncome: 0 },
     { x: 5, y: 0, name: "KAI", cost: 100, symbol: "🚂" },
-    { x: 4, y: 0, name: "Amman", color: "kuning", price: 340, rent: 34, isAvailable: true, owner: null, upgradeLevel: 0 },
-    { x: 3, y: 0, name: "Doha", color: "kuning", price: 360, rent: 36, isAvailable: true, owner: null, upgradeLevel: 0 },
+    { x: 4, y: 0, name: "Amman", color: "kuning", price: 340, rent: 34, isAvailable: true, owner: null, upgradeLevel: 0, rentIncome: 0 },
+    { x: 3, y: 0, name: "Doha", color: "kuning", price: 360, rent: 36, isAvailable: true, owner: null, upgradeLevel: 0, rentIncome: 0 },
     { x: 2, y: 0, name: "PDAM", cost: 75, symbol: "🚰" },
     { x: 0, y: 0, name: "Lelang", symbol: "🔨" },
-    { x: 1, y: 0, name: "Male", color: "kuning", price: 380, rent: 38, isAvailable: true, owner: null, upgradeLevel: 0 },
-    { x: 0, y: 1, name: "Beijing", color: "hijau", price: 400, rent: 40, isAvailable: true, owner: null, upgradeLevel: 0 },
-    { x: 0, y: 2, name: "Taipei", color: "hijau", price: 420, rent: 42, isAvailable: true, owner: null, upgradeLevel: 0 },
+    { x: 1, y: 0, name: "Male", color: "kuning", price: 380, rent: 38, isAvailable: true, owner: null, upgradeLevel: 0, rentIncome: 0 },
+    { x: 0, y: 1, name: "Beijing", color: "hijau", price: 400, rent: 40, isAvailable: true, owner: null, upgradeLevel: 0, rentIncome: 0 },
+    { x: 0, y: 2, name: "Taipei", color: "hijau", price: 420, rent: 42, isAvailable: true, owner: null, upgradeLevel: 0, rentIncome: 0 },
     { x: 0, y: 3, name: "Apes", symbol: "💀" },
-    { x: 0, y: 4, name: "Seoul", color: "hijau", price: 440, rent: 44, isAvailable: true, owner: null, upgradeLevel: 0 },
+    { x: 0, y: 4, name: "Seoul", color: "hijau", price: 440, rent: 44, isAvailable: true, owner: null, upgradeLevel: 0, rentIncome: 0 },
     { x: 0, y: 5, name: "KAI", cost: 100, symbol: "🚂" },
     { x: 0, y: 6, name: "Kesempatan", symbol: "❓" },
-    { x: 0, y: 7, name: "Tokyo", color: "ungu", price: 460, rent: 46, isAvailable: true, owner: null, upgradeLevel: 0 },
+    { x: 0, y: 7, name: "Tokyo", color: "ungu", price: 460, rent: 46, isAvailable: true, owner: null, upgradeLevel: 0, rentIncome: 0 },
     { x: 0, y: 8, name: "Tiket VIP", cost: 150, symbol: "🎟️" },
-    { x: 0, y: 9, name: "Jakarta", color: "ungu", price: 500, rent: 50, isAvailable: true, owner: null, upgradeLevel: 0 }
+    { x: 0, y: 9, name: "Jakarta", color: "ungu", price: 500, rent: 50, isAvailable: true, owner: null, upgradeLevel: 0, rentIncome: 0 }
 ];
 
 for (let y = 0; y < 11; y++) {
@@ -89,6 +89,9 @@ let gameMode = 'local';
 let players = [];
 let currentPlayerIndex = 0;
 let gameActive = false;
+let roundCount = 0; 
+const MAX_ROUNDS = 33; 
+const WINNING_WEALTH = 2500; 
 
 const diceFaces = ["⚀", "⚁", "⚂", "⚃", "⚄", "⚅"];
 
@@ -153,6 +156,7 @@ function startGame(mode) {
     document.getElementById("gameOver").style.display = "none";
     gameActive = true;
     currentPlayerIndex = 0;
+    roundCount = 0; 
     updateTurnStatus();
     updatePlayerIcons();
     updateMoneyStatus();
@@ -160,11 +164,11 @@ function startGame(mode) {
 
 function initializePlayers() {
     players = [];
-    players.push({ name: 'Player 1', money: 1500, position: 0, bankrupt: false, inJail: false, jailTurns: 0, hasGetOutOfJailCard: false });
+    players.push({ name: 'Player 1', money: 1000, position: 0, bankrupt: false, inJail: false, jailTurns: 0, hasGetOutOfJailCard: false });
     if (gameMode === 'local') {
-        players.push({ name: 'Player 2', money: 1500, position: 0, bankrupt: false, inJail: false, jailTurns: 0, hasGetOutOfJailCard: false });
+        players.push({ name: 'Player 2', money: 1000, position: 0, bankrupt: false, inJail: false, jailTurns: 0, hasGetOutOfJailCard: false });
     } else if (gameMode === 'ai') {
-        players.push({ name: 'AI', money: 1500, position: 0, bankrupt: false, inJail: false, jailTurns: 0, hasGetOutOfJailCard: false });
+        players.push({ name: 'AI', money: 1000, position: 0, bankrupt: false, inJail: false, jailTurns: 0, hasGetOutOfJailCard: false });
     }
 }
 
@@ -301,7 +305,8 @@ function handleTileAction(player, playerIndex) {
                 player.money += sellPrice;
                 property.owner = null;
                 property.isAvailable = true;
-                property.upgradeLevel = 0; 
+                property.upgradeLevel = 0;
+                property.rentIncome = 0; 
                 const cell = path.find(c => c.dataset.pos == positions.indexOf(property));
                 const label = cell.querySelector(".property-label");
                 if (label) label.remove(); 
@@ -331,6 +336,7 @@ function handleTileAction(player, playerIndex) {
                 if (!owner.bankrupt && player.money >= currentRent) {
                     player.money -= currentRent;
                     owner.money += currentRent;
+                    tile.rentIncome += currentRent; 
                     message = `${player.name} membayar sewa ${currentRent} ke ${tile.owner}.`;
                 } else {
                     checkBankruptcy(player);
@@ -393,6 +399,12 @@ function updateTurnStatus() {
     if (!gameActive) return;
     document.getElementById("turnPlayer1").style.display = currentPlayerIndex === 0 ? "block" : "none";
     document.getElementById("turnPlayer2").style.display = currentPlayerIndex === 1 ? "block" : "none";
+    
+    if (currentPlayerIndex === 0) {
+        roundCount++;
+        showBubbleText(`Ronde ${roundCount} dari ${MAX_ROUNDS}`);
+    }
+
     currentPlayerIndex = (currentPlayerIndex + 1) % players.length;
     while (players[currentPlayerIndex].bankrupt) {
         currentPlayerIndex = (currentPlayerIndex + 1) % players.length;
@@ -431,43 +443,68 @@ function aiTakeTurn() {
     }, 1000);
 }
 
+function calculateWealth(player) {
+    const ownedProperties = positions.filter(p => p.owner === player.name && p.price);
+    const propertyValue = ownedProperties.reduce((sum, p) => sum + p.rentIncome, 0);
+    return player.money + propertyValue;
+}
+
 function checkGameOver() {
     const activePlayers = players.filter(p => !p.bankrupt);
-    if (activePlayers.length <= 1) {
+
+    for (const player of activePlayers) {
+        const wealth = calculateWealth(player);
+        if (wealth >= WINNING_WEALTH) {
+            endGame(`${player.name} menang dengan kekayaan ${wealth}!`);
+            return;
+        }
+    }
+
+    if (roundCount >= MAX_ROUNDS || activePlayers.length <= 1) {
         gameActive = false;
         document.getElementById("rollDiceButton").style.display = "none";
         const gameOverDiv = document.getElementById("gameOver");
-        gameOverDiv.textContent = activePlayers.length === 1 ?
-            `${activePlayers[0].name} menang!` : "Permainan berakhir tanpa pemenang!";
-        gameOverDiv.style.display = "block";
 
         if (activePlayers.length === 1) {
-            confetti({
-                particleCount: 100,
-                spread: 70,
-                origin: { y: 0.6 }
-            });
+            const winner = activePlayers[0];
+            endGame(`${winner.name} menang sebagai pemain terakhir! Kekayaan: ${calculateWealth(winner)}`);
+        } else {
+            const wealths = activePlayers.map(p => ({ name: p.name, wealth: calculateWealth(p) }));
+            const winner = wealths.reduce((max, p) => p.wealth > max.wealth ? p : max, wealths[0]);
+            endGame(`Ronde habis! ${winner.name} menang dengan kekayaan ${winner.wealth}!`);
         }
-
-        const buttonsDiv = document.createElement("div");
-        buttonsDiv.classList.add("game-over-buttons");
-        buttonsDiv.innerHTML = `
-            <button onclick="restartGame()">Main Lagi</button>
-            <button onclick="returnToModeSelection()">Kembali</button>
-        `;
-        gameOverDiv.insertAdjacentElement("afterend", buttonsDiv);
-
-        updateRollDiceButtonState(); 
     }
 }
 
+function endGame(message) {
+    gameActive = false;
+    document.getElementById("rollDiceButton").style.display = "none";
+    const gameOverDiv = document.getElementById("gameOver");
+    gameOverDiv.textContent = message;
+    gameOverDiv.style.display = "block";
+
+    confetti({
+        particleCount: 100,
+        spread: 70,
+        origin: { y: 0.6 }
+    });
+
+    const buttonsDiv = document.createElement("div");
+    buttonsDiv.classList.add("game-over-buttons");
+    buttonsDiv.innerHTML = `
+        <button onclick="restartGame()">Main Lagi</button>
+        <button onclick="returnToModeSelection()">Kembali</button>
+    `;
+    gameOverDiv.insertAdjacentElement("afterend", buttonsDiv);
+
+    updateRollDiceButtonState();
+}
+
 function updateMoneyStatus() {
-    const wealth = (player) => {
-        const ownedProperties = positions.filter(p => p.owner === player.name && p.price);
-        return ownedProperties.reduce((sum, p) => sum + p.price, 0);
-    };
-    document.getElementById("moneyPlayer1").textContent = `${players[0].money}(${wealth(players[0])})`;
-    document.getElementById("moneyPlayer2").textContent = `${players[1].money}(${wealth(players[1])})`;
+    players.forEach((player, index) => {
+        const wealth = calculateWealth(player);
+        document.getElementById(`moneyPlayer${index + 1}`).textContent = `Uang: ${player.money} | Total: ${wealth}`;
+    });
 }
 
 function updateRollDiceButtonState() {
@@ -484,7 +521,8 @@ function restartGame() {
         if (pos.price) {
             pos.isAvailable = true;
             pos.owner = null;
-            pos.upgradeLevel = 0; 
+            pos.upgradeLevel = 0;
+            pos.rentIncome = 0; 
             const cell = path.find(c => c.dataset.pos == positions.indexOf(pos));
             const label = cell.querySelector(".property-label");
             if (label) label.remove();
@@ -502,7 +540,8 @@ function returnToModeSelection() {
         if (pos.price) {
             pos.isAvailable = true;
             pos.owner = null;
-            pos.upgradeLevel = 0; 
+            pos.upgradeLevel = 0;
+            pos.rentIncome = 0; 
             const cell = path.find(c => c.dataset.pos == positions.indexOf(pos));
             const label = cell.querySelector(".property-label");
             if (label) label.remove();
