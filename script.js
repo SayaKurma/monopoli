@@ -91,23 +91,20 @@ let currentPlayerIndex = 0;
 let gameActive = false;
 let roundCount = 0; 
 const MAX_ROUNDS = 33; 
-const WINNING_WEALTH = 2500; 
+const WINNING_RENT_INCOME = 2500; 
 
 const diceFaces = ["⚀", "⚁", "⚂", "⚃", "⚄", "⚅"];
 
 const chanceEffects = [
     (player) => { player.money += 170; return `${player.name} mendapat hibah uang 170 dari Bank!`; },
     (player) => {
-        if (player.money >= 130) {
-            player.money -= 130;
-            const opponent = players.find(p => p.name !== player.name && !p.bankrupt);
-            if (opponent) {
-                opponent.money += 130;
-                return `${player.name} mendonasikan 130 kepada ${opponent.name}.`;
-            }
-            return `${player.name} tidak memiliki lawan untuk didonasikan.`;
+        player.money -= 130;
+        const opponent = players.find(p => p.name !== player.name);
+        if (opponent) {
+            opponent.money += 130;
+            return `${player.name} mendonasikan 130 kepada ${opponent.name}.`;
         }
-        return `${player.name} tidak memiliki cukup uang untuk mendonasikan 130.`;
+        return `${player.name} tidak memiliki lawan untuk didonasikan.`;
     },
     (player) => { player.hasGetOutOfJailCard = true; return `${player.name} mendapatkan kartu bebas penjara!`; },
     (player, playerIndex) => {
@@ -164,11 +161,11 @@ function startGame(mode) {
 
 function initializePlayers() {
     players = [];
-    players.push({ name: 'Player 1', money: 1000, position: 0, bankrupt: false, inJail: false, jailTurns: 0, hasGetOutOfJailCard: false });
+    players.push({ name: 'Player 1', money: 1000, rentIncome: 1000, position: 0, inJail: false, jailTurns: 0, hasGetOutOfJailCard: false });
     if (gameMode === 'local') {
-        players.push({ name: 'Player 2', money: 1000, position: 0, bankrupt: false, inJail: false, jailTurns: 0, hasGetOutOfJailCard: false });
+        players.push({ name: 'Player 2', money: 1000, rentIncome: 1000, position: 0, inJail: false, jailTurns: 0, hasGetOutOfJailCard: false });
     } else if (gameMode === 'ai') {
-        players.push({ name: 'AI', money: 1000, position: 0, bankrupt: false, inJail: false, jailTurns: 0, hasGetOutOfJailCard: false });
+        players.push({ name: 'AI', money: 1000, rentIncome: 1000, position: 0, inJail: false, jailTurns: 0, hasGetOutOfJailCard: false });
     }
 }
 
@@ -203,7 +200,6 @@ function updatePlayerIcons() {
 function rollDice() {
     if (!gameActive || (gameMode === 'ai' && currentPlayerIndex !== 0)) return;
     const currentPlayer = players[currentPlayerIndex];
-    if (currentPlayer.bankrupt) return;
 
     const diceElement = document.getElementById("dice");
     diceElement.style.display = "block";
@@ -261,7 +257,6 @@ function upgradeProperty(player, property, playerIndex) {
 }
 
 function handleTileAction(player, playerIndex) {
-    if (player.bankrupt) return;
     const tile = positions[player.position];
     let message = "";
 
@@ -294,7 +289,6 @@ function handleTileAction(player, playerIndex) {
         case "PDAM":
         case "Tiket VIP":
             player.money -= tile.cost;
-            checkBankruptcy(player);
             message = `${player.name} membayar ${tile.cost} untuk ${tile.name}.`;
             break;
         case "Lelang":
@@ -333,15 +327,11 @@ function handleTileAction(player, playerIndex) {
             } else if (tile.price && tile.owner && tile.owner !== player.name) {
                 const owner = players.find(p => p.name === tile.owner);
                 const currentRent = calculateRent(tile);
-                if (!owner.bankrupt && player.money >= currentRent) {
-                    player.money -= currentRent;
-                    owner.money += currentRent;
-                    tile.rentIncome += currentRent; 
-                    message = `${player.name} membayar sewa ${currentRent} ke ${tile.owner}.`;
-                } else {
-                    checkBankruptcy(player);
-                    message = `${player.name} bangkrut karena tidak bisa bayar sewa ${currentRent}.`;
-                }
+                player.money -= currentRent;
+                owner.money += currentRent;
+                owner.rentIncome += currentRent; 
+                tile.rentIncome += currentRent; 
+                message = `${player.name} membayar sewa ${currentRent} ke ${tile.owner}.`;
             } else {
                 message = `${player.name} mendarat di ${tile.name}.`;
             }
@@ -387,14 +377,6 @@ function buyProperty(player, property, playerIndex) {
     thead.insertAdjacentElement("afterend", label); 
 }
 
-function checkBankruptcy(player) {
-    if (player.money < 0) {
-        player.bankrupt = true;
-        playerElements[players.indexOf(player)].style.display = "none";
-        showBubbleText(`${player.name} bangkrut!`);
-    }
-}
-
 function updateTurnStatus() {
     if (!gameActive) return;
     document.getElementById("turnPlayer1").style.display = currentPlayerIndex === 0 ? "block" : "none";
@@ -406,9 +388,6 @@ function updateTurnStatus() {
     }
 
     currentPlayerIndex = (currentPlayerIndex + 1) % players.length;
-    while (players[currentPlayerIndex].bankrupt) {
-        currentPlayerIndex = (currentPlayerIndex + 1) % players.length;
-    }
     updateRollDiceButtonState();
     if (gameMode === 'ai' && currentPlayerIndex === 1) aiTakeTurn();
     checkGameOver();
@@ -417,8 +396,6 @@ function updateTurnStatus() {
 function aiTakeTurn() {
     setTimeout(() => {
         const aiPlayer = players[1];
-        if (aiPlayer.bankrupt) return updateTurnStatus();
-
         const diceElement = document.getElementById("dice");
         diceElement.style.display = "block";
         diceElement.classList.add("rolling");
@@ -443,36 +420,18 @@ function aiTakeTurn() {
     }, 1000);
 }
 
-function calculateWealth(player) {
-    const ownedProperties = positions.filter(p => p.owner === player.name && p.price);
-    const propertyValue = ownedProperties.reduce((sum, p) => sum + p.rentIncome, 0);
-    return player.money + propertyValue;
-}
-
 function checkGameOver() {
-    const activePlayers = players.filter(p => !p.bankrupt);
-
-    for (const player of activePlayers) {
-        const wealth = calculateWealth(player);
-        if (wealth >= WINNING_WEALTH) {
-            endGame(`${player.name} menang dengan kekayaan ${wealth}!`);
+    for (const player of players) {
+        if (player.rentIncome >= WINNING_RENT_INCOME) {
+            endGame(`${player.name} menang dengan pendapatan sewa ${player.rentIncome}!`);
             return;
         }
     }
 
-    if (roundCount >= MAX_ROUNDS || activePlayers.length <= 1) {
-        gameActive = false;
-        document.getElementById("rollDiceButton").style.display = "none";
-        const gameOverDiv = document.getElementById("gameOver");
-
-        if (activePlayers.length === 1) {
-            const winner = activePlayers[0];
-            endGame(`${winner.name} menang sebagai pemain terakhir! Kekayaan: ${calculateWealth(winner)}`);
-        } else {
-            const wealths = activePlayers.map(p => ({ name: p.name, wealth: calculateWealth(p) }));
-            const winner = wealths.reduce((max, p) => p.wealth > max.wealth ? p : max, wealths[0]);
-            endGame(`Ronde habis! ${winner.name} menang dengan kekayaan ${winner.wealth}!`);
-        }
+    if (roundCount >= MAX_ROUNDS) {
+        const rentIncomes = players.map(p => ({ name: p.name, rentIncome: p.rentIncome }));
+        const winner = rentIncomes.reduce((max, p) => p.rentIncome > max.rentIncome ? p : max, rentIncomes[0]);
+        endGame(`Ronde habis! ${winner.name} menang dengan pendapatan sewa ${winner.rentIncome}!`);
     }
 }
 
@@ -502,8 +461,7 @@ function endGame(message) {
 
 function updateMoneyStatus() {
     players.forEach((player, index) => {
-        const wealth = calculateWealth(player);
-        document.getElementById(`moneyPlayer${index + 1}`).textContent = `Uang: ${player.money} | Total: ${wealth}`;
+        document.getElementById(`moneyPlayer${index + 1}`).textContent = `${player.money}(${player.rentIncome})`;
     });
 }
 
