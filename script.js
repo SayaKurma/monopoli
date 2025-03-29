@@ -99,9 +99,11 @@ const chanceEffects = [
     (player) => { player.money += 170; return `${player.name} mendapat hibah uang 170 dari Bank!`; },
     (player) => {
         player.money -= 130;
+        player.rentIncome -= 130; 
         const opponent = players.find(p => p.name !== player.name);
         if (opponent) {
             opponent.money += 130;
+            opponent.rentIncome += 130; 
             return `${player.name} mendonasikan 130 kepada ${opponent.name}.`;
         }
         return `${player.name} tidak memiliki lawan untuk didonasikan.`;
@@ -111,19 +113,28 @@ const chanceEffects = [
         player.position = 0;
         movePlayer(playerIndex);
         player.money += 150;
+        player.rentIncome += 150; 
         return `${player.name} maju ke Start dan mendapat 150!`;
     }
 ];
 
 const apesEffects = [
-    (player) => { player.money -= 100; return `${player.name} kehilangan 100 karena apes!`; },
+    (player) => { 
+        player.money -= 100; 
+        player.rentIncome -= 100; 
+        return `${player.name} kehilangan 100 karena apes!`; 
+    },
     (player) => {
         player.inJail = true;
         player.jailTurns = 2;
         player.position = positions.findIndex(t => t.name === "Masuk Penjara");
         return `${player.name} masuk penjara selama 2 giliran karena apes!`;
     },
-    (player) => { player.money -= 50; return `${player.name} membayar denda 50 karena apes!`; }
+    (player) => { 
+        player.money -= 50; 
+        player.rentIncome -= 50; 
+        return `${player.name} membayar denda 50 karena apes!`; 
+    }
 ];
 
 function showBubbleText(message) {
@@ -242,6 +253,7 @@ function upgradeProperty(player, property, playerIndex) {
     const upgradeCost = Math.floor(property.price / 3);
     if (player.money >= upgradeCost) {
         player.money -= upgradeCost;
+        player.rentIncome -= upgradeCost; 
         property.upgradeLevel += 1;
         const newRent = calculateRent(property);
 
@@ -281,6 +293,7 @@ function handleTileAction(player, playerIndex) {
             break;
         case "Start":
             player.money += 150;
+            player.rentIncome += 150; 
             message = `${player.name} mendarat di Start dan mendapat 150!`;
             break;
         case "Tiket":
@@ -289,6 +302,7 @@ function handleTileAction(player, playerIndex) {
         case "PDAM":
         case "Tiket VIP":
             player.money -= tile.cost;
+            player.rentIncome -= tile.cost; 
             message = `${player.name} membayar ${tile.cost} untuk ${tile.name}.`;
             break;
         case "Lelang":
@@ -297,6 +311,7 @@ function handleTileAction(player, playerIndex) {
                 const property = owned[Math.floor(Math.random() * owned.length)];
                 const sellPrice = Math.floor(property.price * 1.15);
                 player.money += sellPrice;
+                player.rentIncome += sellPrice; 
                 property.owner = null;
                 property.isAvailable = true;
                 property.upgradeLevel = 0;
@@ -328,6 +343,7 @@ function handleTileAction(player, playerIndex) {
                 const owner = players.find(p => p.name === tile.owner);
                 const currentRent = calculateRent(tile);
                 player.money -= currentRent;
+                player.rentIncome -= currentRent; 
                 owner.money += currentRent;
                 owner.rentIncome += currentRent; 
                 tile.rentIncome += currentRent; 
@@ -365,6 +381,7 @@ function handleJailTurn(player, dice) {
 
 function buyProperty(player, property, playerIndex) {
     player.money -= property.price;
+    player.rentIncome -= property.price; 
     property.owner = player.name;
     property.isAvailable = false;
 
@@ -381,7 +398,7 @@ function updateTurnStatus() {
     if (!gameActive) return;
     document.getElementById("turnPlayer1").style.display = currentPlayerIndex === 0 ? "block" : "none";
     document.getElementById("turnPlayer2").style.display = currentPlayerIndex === 1 ? "block" : "none";
-    
+
     if (currentPlayerIndex === 0) {
         roundCount++;
         showBubbleText(`Ronde ${roundCount} dari ${MAX_ROUNDS}`);
