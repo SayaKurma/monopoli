@@ -62,7 +62,7 @@ for (let y = 0; y < 11; y++) {
                     </table>
                 `;
             } else {
-                div.classList.add("special-t ile");
+                div.classList.add("special-tile");
                 div.textContent = tile.symbol ? `${tile.symbol} ${tile.name}` : tile.name;
             }
             path.push(div);
@@ -175,7 +175,7 @@ function initializePlayers() {
     players = [];
     players.push({ name: 'Player 1', money: 2000, rentIncome: 1500, position: 0, inJail: false, jailTurns: 0, hasGetOutOfJailCard: false });
     if (gameMode === 'local') {
-        players.push({ name: 'Player 2', money: 2000, rent Income: 1500, position: 0, inJail: false, jailTurns: 0, hasGetOutOfJailCard: false });
+        players.push({ name: 'Player 2', money: 2000, rentIncome: 1500, position: 0, inJail: false, jailTurns: 0, hasGetOutOfJailCard: false });
     } else if (gameMode === 'ai') {
         players.push({ name: 'AI', money: 2000, rentIncome: 1500, position: 0, inJail: false, jailTurns: 0, hasGetOutOfJailCard: false });
         aiElo = getAiEloBasedOnPlayerElo(playerElo);
@@ -619,7 +619,7 @@ function checkGameOver() {
     }
 
     if (roundCount >= MAX_ROUNDS) {
-        const totalScores =players.map(p => ({ name: p.name, total: p.money + p.rentIncome }));
+        const totalScores = players.map(p => ({ name: p.name, total: p.money + p.rentIncome }));
         const winner = totalScores.reduce((max, p) => p.total > max.total ? p : max, totalScores[0]);
         endGame(`Ronde habis! ${winner.name} menang dengan total ${winner.total} (Uang: ${players.find(p => p.name === winner.name).money}, Sewa: ${winner.total - players.find(p => p.name === winner.name).money})!`, winner.name);
         if (gameMode === 'ai') updateElo(winner.name === 'Player 1' ? 1 : 0);
