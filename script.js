@@ -91,7 +91,9 @@ let currentPlayerIndex = 0;
 let gameActive = false;
 let roundCount = 0; 
 const MAX_ROUNDS = 33; 
-const WINNING_RENT_INCOME = 2500; 
+const WINNING_RENT_INCOME = 2000; 
+let playerElo = 1200; 
+let aiElo = 1200; 
 
 const diceFaces = ["⚀", "⚁", "⚂", "⚃", "⚄", "⚅"];
 
@@ -139,6 +141,7 @@ window.onload = () => {
     setTimeout(() => {
         document.getElementById("loadingScreen").style.display = "none";
         document.getElementById("modeSelection").style.display = "flex";
+        updateEloDisplay();
     }, 2000); 
 };
 
@@ -161,11 +164,12 @@ function startGame(mode) {
 
 function initializePlayers() {
     players = [];
-    players.push({ name: 'Player 1', money: 1000, rentIncome: 1000, position: 0, inJail: false, jailTurns: 0, hasGetOutOfJailCard: false });
+    players.push({ name: 'Player 1', money: 1500, rentIncome: 1500, position: 0, inJail: false, jailTurns: 0, hasGetOutOfJailCard: false });
     if (gameMode === 'local') {
-        players.push({ name: 'Player 2', money: 1000, rentIncome: 1000, position: 0, inJail: false, jailTurns: 0, hasGetOutOfJailCard: false });
+        players.push({ name: 'Player 2', money: 1500, rentIncome: 1500, position: 0, inJail: false, jailTurns: 0, hasGetOutOfJailCard: false });
     } else if (gameMode === 'ai') {
-        players.push({ name: 'AI', money: 1000, rentIncome: 1000, position: 0, inJail: false, jailTurns: 0, hasGetOutOfJailCard: false });
+        players.push({ name: 'AI', money: 1500, rentIncome: 1500, position: 0, inJail: false, jailTurns: 0, hasGetOutOfJailCard: false });
+        aiElo = getAiEloBasedOnPlayerElo(playerElo); 
     }
 }
 
@@ -200,6 +204,8 @@ function updatePlayerIcons() {
 function rollDice() {
     if (!gameActive || (gameMode === 'ai' && currentPlayerIndex !== 0)) return;
     const currentPlayer = players[currentPlayerIndex];
+    const rollDiceButton = document.getElementById("rollDiceButton");
+    rollDiceButton.disabled = true;
 
     const diceElement = document.getElementById("dice");
     diceElement.style.display = "block";
@@ -311,18 +317,39 @@ function handleTileAction(player, playerIndex) {
             break;
         default:
             if (tile.price && tile.isAvailable) {
-                if (player.money >= tile.price && (gameMode === 'ai' && player.name === 'AI' ? Math.random() > 0.3 : confirm(`Beli ${tile.name} seharga ${tile.price}?`))) {
-                    buyProperty(player, tile, playerIndex);
-                    message = `${player.name} membeli ${tile.name} seharga ${tile.price}!`;
+                if (player.money >= tile.price) {
+                    if (player.name === 'AI') {
+                        const shouldBuy = aiDecideToBuy(player, tile);
+                        if (shouldBuy) {
+                            buyProperty(player, tile, playerIndex);
+                            message = `${player.name} membeli ${tile.name} seharga ${tile.price}!`;
+                        } else {
+                            message = `${player.name} tidak membeli ${tile.name}.`;
+                        }
+                    } else if (confirm(`Beli ${tile.name} seharga ${tile.price}?`)) {
+                        buyProperty(player, tile, playerIndex);
+                        message = `${player.name} membeli ${tile.name} seharga ${tile.price}!`;
+                    } else {
+                        message = `${player.name} tidak membeli ${tile.name}.`;
+                    }
                 } else {
-                    message = `${player.name} tidak membeli ${tile.name}.`;
+                    message = `${player.name} tidak punya cukup uang untuk membeli ${tile.name}.`;
                 }
             } else if (tile.price && tile.owner === player.name) {
                 const upgradeCost = Math.floor(tile.price / 3);
-                if (player.money >= upgradeCost && (gameMode === 'ai' && player.name === 'AI' ? Math.random() > 0.5 : confirm(`Tingkatkan ${tile.name} seharga ${upgradeCost} untuk meningkatkan sewa?`))) {
-                    message = upgradeProperty(player, tile, playerIndex);
-                } else {
-                    message = `${player.name} mendarat di ${tile.name} miliknya sendiri.`;
+                if (player.money >= upgradeCost) {
+                    if (player.name === 'AI') {
+                        const shouldUpgrade = aiDecideToUpgrade(player, tile);
+                        if (shouldUpgrade) {
+                            message = upgradeProperty(player, tile, playerIndex);
+                        } else {
+                            message = `${player.name} memilih tidak meningkatkan ${tile.name}.`;
+                        }
+                    } else if (confirm(`Tingkatkan ${tile.name} seharga ${upgradeCost} untuk meningkatkan sewa?`)) {
+                        message = upgradeProperty(player, tile, playerIndex);
+                    } else {
+                        message = `${player.name} mendarat di ${tile.name} miliknya sendiri.`;
+                    }
                 }
             } else if (tile.price && tile.owner && tile.owner !== player.name) {
                 const owner = players.find(p => p.name === tile.owner);
@@ -336,6 +363,11 @@ function handleTileAction(player, playerIndex) {
             } else {
                 message = `${player.name} mendarat di ${tile.name}.`;
             }
+    }
+
+    if (player.money < 0) {
+        endGame(`${player.name} bangkrut! Permainan berakhir.`);
+        return;
     }
 
     showBubbleText(message); 
@@ -421,10 +453,57 @@ function aiTakeTurn() {
     }, 1000);
 }
 
+function getAiEloBasedOnPlayerElo(playerElo) {
+    if (playerElo < 1350) return 1200; 
+    if (playerElo <= 1500) return 1425; 
+    return 1600; 
+}
+
+function aiDecideToBuy(aiPlayer, tile) {
+    if (playerElo < 1350) { 
+        return Math.random() > 0.5;
+    } else if (playerElo <= 1500) { 
+        const roi = tile.rent / tile.price;
+        return aiPlayer.money > tile.price * 1.5 && roi > 0.08;
+    } else { 
+        const roi = tile.rent / tile.price;
+        const ownedInColor = positions.filter(p => p.color === tile.color && p.owner === aiPlayer.name).length;
+        const totalInColor = positions.filter(p => p.color === tile.color).length;
+        const reserveMoney = 300;
+
+        return (aiPlayer.money > tile.price + reserveMoney) && 
+               (ownedInColor === totalInColor - 1 || roi > 0.1 || roundCount < 15);
+    }
+}
+
+function aiDecideToUpgrade(aiPlayer, tile) {
+    if (playerElo < 1350) { 
+        return Math.random() > 0.8;
+    } else if (playerElo <= 1500) { 
+        const upgradeCost = Math.floor(tile.price / 3);
+        return aiPlayer.money > upgradeCost * 2;
+    } else { 
+        const upgradeCost = Math.floor(tile.price / 3);
+        const ownedInColor = positions.filter(p => p.color === tile.color && p.owner === aiPlayer.name).length;
+        const totalInColor = positions.filter(p => p.color === tile.color).length;
+        const reserveMoney = 300;
+
+        return (aiPlayer.money > upgradeCost + reserveMoney) && 
+               (ownedInColor === totalInColor || (roundCount > 20 && tile.rentIncome > 0));
+    }
+}
+
+function calculateEloChange(playerElo, aiElo, result) {
+    const K = 32; 
+    const expected = 1 / (1 + Math.pow(10, (aiElo - playerElo) / 400));
+    return Math.round(playerElo + K * (result - expected));
+}
+
 function checkGameOver() {
     for (const player of players) {
         if (player.rentIncome >= WINNING_RENT_INCOME) {
             endGame(`${player.name} menang dengan pendapatan sewa ${player.rentIncome}!`);
+            if (gameMode === 'ai') updateElo(player.name === 'Player 1' ? 1 : 0);
             return;
         }
     }
@@ -433,7 +512,19 @@ function checkGameOver() {
         const rentIncomes = players.map(p => ({ name: p.name, rentIncome: p.rentIncome }));
         const winner = rentIncomes.reduce((max, p) => p.rentIncome > max.rentIncome ? p : max, rentIncomes[0]);
         endGame(`Ronde habis! ${winner.name} menang dengan pendapatan sewa ${winner.rentIncome}!`);
+        if (gameMode === 'ai') updateElo(winner.name === 'Player 1' ? 1 : 0);
     }
+}
+
+function updateElo(result) {
+    const oldPlayerElo = playerElo;
+    playerElo = calculateEloChange(playerElo, aiElo, result);
+    aiElo = calculateEloChange(aiElo, oldPlayerElo, 1 - result);
+    updateEloDisplay();
+}
+
+function updateEloDisplay() {
+    document.getElementById("playerElo").textContent = playerElo;
 }
 
 function endGame(message) {
@@ -475,7 +566,7 @@ function updateRollDiceButtonState() {
     }
 }
 
-function restartGame() {
+function resetProperties() {
     positions.forEach(pos => {
         if (pos.price) {
             pos.isAvailable = true;
@@ -487,29 +578,19 @@ function restartGame() {
             if (label) label.remove();
         }
     });
+}
 
+function restartGame() {
+    resetProperties();
     const buttonsDiv = document.querySelector(".game-over-buttons");
     if (buttonsDiv) buttonsDiv.remove();
-
     startGame(gameMode);
 }
 
 function returnToModeSelection() {
-    positions.forEach(pos => {
-        if (pos.price) {
-            pos.isAvailable = true;
-            pos.owner = null;
-            pos.upgradeLevel = 0;
-            pos.rentIncome = 0; 
-            const cell = path.find(c => c.dataset.pos == positions.indexOf(pos));
-            const label = cell.querySelector(".property-label");
-            if (label) label.remove();
-        }
-    });
-
+    resetProperties();
     const buttonsDiv = document.querySelector(".game-over-buttons");
     if (buttonsDiv) buttonsDiv.remove();
-
     document.getElementById("gameScreen").style.display = "none";
     document.getElementById("modeSelection").style.display = "flex";
 }
