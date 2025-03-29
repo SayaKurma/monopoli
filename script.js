@@ -301,7 +301,7 @@ function handleTileAction(player, playerIndex) {
                 player.money += sellPrice;
                 property.owner = null;
                 property.isAvailable = true;
-                property.upgradeLevel = 0; // Reset level saat dijual
+                property.upgradeLevel = 0; 
                 const cell = path.find(c => c.dataset.pos == positions.indexOf(property));
                 const label = cell.querySelector(".property-label");
                 if (label) label.remove(); 
@@ -319,7 +319,6 @@ function handleTileAction(player, playerIndex) {
                     message = `${player.name} tidak membeli ${tile.name}.`;
                 }
             } else if (tile.price && tile.owner === player.name) {
-                // Opsi untuk meningkatkan properti
                 const upgradeCost = Math.floor(tile.price / 3);
                 if (player.money >= upgradeCost && (gameMode === 'ai' && player.name === 'AI' ? Math.random() > 0.5 : confirm(`Tingkatkan ${tile.name} seharga ${upgradeCost} untuk meningkatkan sewa?`))) {
                     message = upgradeProperty(player, tile, playerIndex);
@@ -485,7 +484,7 @@ function restartGame() {
         if (pos.price) {
             pos.isAvailable = true;
             pos.owner = null;
-            pos.upgradeLevel = 0; // Reset level saat restart
+            pos.upgradeLevel = 0; 
             const cell = path.find(c => c.dataset.pos == positions.indexOf(pos));
             const label = cell.querySelector(".property-label");
             if (label) label.remove();
@@ -503,7 +502,7 @@ function returnToModeSelection() {
         if (pos.price) {
             pos.isAvailable = true;
             pos.owner = null;
-            pos.upgradeLevel = 0; // Reset level saat kembali ke mode selection
+            pos.upgradeLevel = 0; 
             const cell = path.find(c => c.dataset.pos == positions.indexOf(pos));
             const label = cell.querySelector(".property-label");
             if (label) label.remove();
