@@ -4,45 +4,45 @@ let playerElements = [];
 
 const positions = [
     { x: 0, y: 10, name: "Start" },
-    { x: 1, y: 10, name: "Dili", color: "coklat", price: 60, rent: 6, isAvailable: true, owner: null },
+    { x: 1, y: 10, name: "Dili", color: "coklat", price: 60, rent: 6, isAvailable: true, owner: null, upgradeLevel: 0 },
     { x: 2, y: 10, name: "Apes", symbol: "💀" },
-    { x: 3, y: 10, name: "Kabul", color: "coklat", price: 80, rent: 8, isAvailable: true, owner: null },
+    { x: 3, y: 10, name: "Kabul", color: "coklat", price: 80, rent: 8, isAvailable: true, owner: null, upgradeLevel: 0 },
     { x: 4, y: 10, name: "Tiket", cost: 50, symbol: "✈️" },
     { x: 5, y: 10, name: "KAI", cost: 100, symbol: "🚂" },
-    { x: 6, y: 10, name: "Hanoi", color: "cyan", price: 100, rent: 10, isAvailable: true, owner: null },
+    { x: 6, y: 10, name: "Hanoi", color: "cyan", price: 100, rent: 10, isAvailable: true, owner: null, upgradeLevel: 0 },
     { x: 7, y: 10, name: "Kesempatan", symbol: "❓" },
-    { x: 8, y: 10, name: "Dhaka", color: "cyan", price: 120, rent: 12, isAvailable: true, owner: null },
-    { x: 9, y: 10, name: "Manila", color: "cyan", price: 140, rent: 14, isAvailable: true, owner: null },
+    { x: 8, y: 10, name: "Dhaka", color: "cyan", price: 120, rent: 12, isAvailable: true, owner: null, upgradeLevel: 0 },
+    { x: 9, y: 10, name: "Manila", color: "cyan", price: 140, rent: 14, isAvailable: true, owner: null, upgradeLevel: 0 },
     { x: 10, y: 10, name: "Masuk Penjara" },
-    { x: 10, y: 9, name: "Delhi", color: "pink", price: 160, rent: 16, isAvailable: true, owner: null },
+    { x: 10, y: 9, name: "Delhi", color: "pink", price: 160, rent: 16, isAvailable: true, owner: null, upgradeLevel: 0 },
     { x: 10, y: 8, name: "PLN", cost: 75, symbol: "⚡" },
-    { x: 10, y: 7, name: "Bangkok", color: "pink", price: 180, rent: 18, isAvailable: true, owner: null },
-    { x: 10, y: 6, name: "Beirut", color: "pink", price: 200, rent: 20, isAvailable: true, owner: null },
+    { x: 10, y: 7, name: "Bangkok", color: "pink", price: 180, rent: 18, isAvailable: true, owner: null, upgradeLevel: 0 },
+    { x: 10, y: 6, name: "Beirut", color: "pink", price: 200, rent: 20, isAvailable: true, owner: null, upgradeLevel: 0 },
     { x: 10, y: 5, name: "KAI", cost: 100, symbol: "🚂" },
-    { x: 10, y: 4, name: "Tashkent", color: "oren", price: 220, rent: 22, isAvailable: true, owner: null },
+    { x: 10, y: 4, name: "Tashkent", color: "oren", price: 220, rent: 22, isAvailable: true, owner: null, upgradeLevel: 0 },
     { x: 10, y: 3, name: "Apes", symbol: "💀" },
-    { x: 10, y: 2, name: "Astana", color: "oren", price: 240, rent: 24, isAvailable: true, owner: null },
-    { x: 10, y: 1, name: "Manama", color: "oren", price: 260, rent: 26, isAvailable: true, owner: null },
+    { x: 10, y: 2, name: "Astana", color: "oren", price: 240, rent: 24, isAvailable: true, owner: null, upgradeLevel: 0 },
+    { x: 10, y: 1, name: "Manama", color: "oren", price: 260, rent: 26, isAvailable: true, owner: null, upgradeLevel: 0 },
     { x: 10, y: 0, name: "Bebas Parkir" },
-    { x: 9, y: 0, name: "Tehran", color: "merah", price: 280, rent: 28, isAvailable: true, owner: null },
+    { x: 9, y: 0, name: "Tehran", color: "merah", price: 280, rent: 28, isAvailable: true, owner: null, upgradeLevel: 0 },
     { x: 8, y: 0, name: "Kesempatan", symbol: "❓" },
-    { x: 7, y: 0, name: "Bagdad", color: "merah", price: 300, rent: 30, isAvailable: true, owner: null },
-    { x: 6, y: 0, name: "Riyadh", color: "merah", price: 320, rent: 32, isAvailable: true, owner: null },
+    { x: 7, y: 0, name: "Bagdad", color: "merah", price: 300, rent: 30, isAvailable: true, owner: null, upgradeLevel: 0 },
+    { x: 6, y: 0, name: "Riyadh", color: "merah", price: 320, rent: 32, isAvailable: true, owner: null, upgradeLevel: 0 },
     { x: 5, y: 0, name: "KAI", cost: 100, symbol: "🚂" },
-    { x: 4, y: 0, name: "Amman", color: "kuning", price: 340, rent: 34, isAvailable: true, owner: null },
-    { x: 3, y: 0, name: "Doha", color: "kuning", price: 360, rent: 36, isAvailable: true, owner: null },
+    { x: 4, y: 0, name: "Amman", color: "kuning", price: 340, rent: 34, isAvailable: true, owner: null, upgradeLevel: 0 },
+    { x: 3, y: 0, name: "Doha", color: "kuning", price: 360, rent: 36, isAvailable: true, owner: null, upgradeLevel: 0 },
     { x: 2, y: 0, name: "PDAM", cost: 75, symbol: "🚰" },
     { x: 0, y: 0, name: "Lelang", symbol: "🔨" },
-    { x: 1, y: 0, name: "Male", color: "kuning", price: 380, rent: 38, isAvailable: true, owner: null },
-    { x: 0, y: 1, name: "Beijing", color: "hijau", price: 400, rent: 40, isAvailable: true, owner: null },
-    { x: 0, y: 2, name: "Taipei", color: "hijau", price: 420, rent: 42, isAvailable: true, owner: null },
+    { x: 1, y: 0, name: "Male", color: "kuning", price: 380, rent: 38, isAvailable: true, owner: null, upgradeLevel: 0 },
+    { x: 0, y: 1, name: "Beijing", color: "hijau", price: 400, rent: 40, isAvailable: true, owner: null, upgradeLevel: 0 },
+    { x: 0, y: 2, name: "Taipei", color: "hijau", price: 420, rent: 42, isAvailable: true, owner: null, upgradeLevel: 0 },
     { x: 0, y: 3, name: "Apes", symbol: "💀" },
-    { x: 0, y: 4, name: "Seoul", color: "hijau", price: 440, rent: 44, isAvailable: true, owner: null },
+    { x: 0, y: 4, name: "Seoul", color: "hijau", price: 440, rent: 44, isAvailable: true, owner: null, upgradeLevel: 0 },
     { x: 0, y: 5, name: "KAI", cost: 100, symbol: "🚂" },
     { x: 0, y: 6, name: "Kesempatan", symbol: "❓" },
-    { x: 0, y: 7, name: "Tokyo", color: "ungu", price: 460, rent: 46, isAvailable: true, owner: null },
+    { x: 0, y: 7, name: "Tokyo", color: "ungu", price: 460, rent: 46, isAvailable: true, owner: null, upgradeLevel: 0 },
     { x: 0, y: 8, name: "Tiket VIP", cost: 150, symbol: "🎟️" },
-    { x: 0, y: 9, name: "Jakarta", color: "ungu", price: 500, rent: 50, isAvailable: true, owner: null }
+    { x: 0, y: 9, name: "Jakarta", color: "ungu", price: 500, rent: 50, isAvailable: true, owner: null, upgradeLevel: 0 }
 ];
 
 for (let y = 0; y < 11; y++) {
@@ -234,6 +234,28 @@ function movePlayer(playerIndex) {
     }
 }
 
+function calculateRent(tile) {
+    return Math.floor(tile.rent * (1 + tile.upgradeLevel * 0.5));
+}
+
+function upgradeProperty(player, property, playerIndex) {
+    const upgradeCost = Math.floor(property.price / 3);
+    if (player.money >= upgradeCost) {
+        player.money -= upgradeCost;
+        property.upgradeLevel += 1;
+        const newRent = calculateRent(property);
+
+        const cell = path.find(c => c.dataset.pos == positions.indexOf(property));
+        const label = cell.querySelector(".property-label");
+        if (label) {
+            label.textContent = `Sewa: ${newRent} (Lv${property.upgradeLevel})`;
+        }
+
+        return `${player.name} meningkatkan ${property.name} ke level ${property.upgradeLevel} seharga ${upgradeCost}! Sewa sekarang ${newRent}.`;
+    }
+    return `${player.name} tidak punya cukup uang untuk meningkatkan ${property.name}.`;
+}
+
 function handleTileAction(player, playerIndex) {
     if (player.bankrupt) return;
     const tile = positions[player.position];
@@ -279,6 +301,7 @@ function handleTileAction(player, playerIndex) {
                 player.money += sellPrice;
                 property.owner = null;
                 property.isAvailable = true;
+                property.upgradeLevel = 0; // Reset level saat dijual
                 const cell = path.find(c => c.dataset.pos == positions.indexOf(property));
                 const label = cell.querySelector(".property-label");
                 if (label) label.remove(); 
@@ -295,15 +318,24 @@ function handleTileAction(player, playerIndex) {
                 } else {
                     message = `${player.name} tidak membeli ${tile.name}.`;
                 }
+            } else if (tile.price && tile.owner === player.name) {
+                // Opsi untuk meningkatkan properti
+                const upgradeCost = Math.floor(tile.price / 3);
+                if (player.money >= upgradeCost && (gameMode === 'ai' && player.name === 'AI' ? Math.random() > 0.5 : confirm(`Tingkatkan ${tile.name} seharga ${upgradeCost} untuk meningkatkan sewa?`))) {
+                    message = upgradeProperty(player, tile, playerIndex);
+                } else {
+                    message = `${player.name} mendarat di ${tile.name} miliknya sendiri.`;
+                }
             } else if (tile.price && tile.owner && tile.owner !== player.name) {
                 const owner = players.find(p => p.name === tile.owner);
-                if (!owner.bankrupt && player.money >= tile.rent) {
-                    player.money -= tile.rent;
-                    owner.money += tile.rent;
-                    message = `${player.name} membayar sewa ${tile.rent} ke ${tile.owner}.`;
+                const currentRent = calculateRent(tile);
+                if (!owner.bankrupt && player.money >= currentRent) {
+                    player.money -= currentRent;
+                    owner.money += currentRent;
+                    message = `${player.name} membayar sewa ${currentRent} ke ${tile.owner}.`;
                 } else {
                     checkBankruptcy(player);
-                    message = `${player.name} bangkrut karena tidak bisa bayar sewa ${tile.rent}.`;
+                    message = `${player.name} bangkrut karena tidak bisa bayar sewa ${currentRent}.`;
                 }
             } else {
                 message = `${player.name} mendarat di ${tile.name}.`;
@@ -345,7 +377,7 @@ function buyProperty(player, property, playerIndex) {
     const label = document.createElement("div");
     label.classList.add("property-label");
     label.classList.add(player.name === "Player 1" ? "player1" : "player2");
-    label.textContent = `Sewa: ${property.rent}`;
+    label.textContent = `Sewa: ${property.rent} (Lv${property.upgradeLevel})`;
     const thead = cell.querySelector("thead");
     thead.insertAdjacentElement("afterend", label); 
 }
@@ -453,6 +485,7 @@ function restartGame() {
         if (pos.price) {
             pos.isAvailable = true;
             pos.owner = null;
+            pos.upgradeLevel = 0; // Reset level saat restart
             const cell = path.find(c => c.dataset.pos == positions.indexOf(pos));
             const label = cell.querySelector(".property-label");
             if (label) label.remove();
@@ -470,6 +503,7 @@ function returnToModeSelection() {
         if (pos.price) {
             pos.isAvailable = true;
             pos.owner = null;
+            pos.upgradeLevel = 0; // Reset level saat kembali ke mode selection
             const cell = path.find(c => c.dataset.pos == positions.indexOf(pos));
             const label = cell.querySelector(".property-label");
             if (label) label.remove();
