@@ -80,7 +80,7 @@ for (let y = 0; y < 11; y++) {
 
 const bankImage = document.createElement("div");
 bankImage.classList.add("bank-image");
-bankImage.style.backgroundImage = "url('bank.png')"; 
+bankImage.style.backgroundImage = "url('bank.png')";
 bankImage.style.backgroundSize = "cover";
 bankImage.style.backgroundPosition = "center";
 board.appendChild(bankImage);
@@ -89,21 +89,28 @@ let gameMode = 'local';
 let players = [];
 let currentPlayerIndex = 0;
 let gameActive = false;
-let roundCount = 0; 
-const MAX_ROUNDS = 33; 
-const WINNING_RENT_INCOME = 2000; 
-let playerElo = 1200; 
-let aiElo = 1200; 
+let roundCount = 0;
+const MAX_ROUNDS = 33;
+const WINNING_RENT_INCOME = 2000;
+let playerElo = 1200;
+let aiElo = 1200;
 
 const diceFaces = ["⚀", "⚁", "⚂", "⚃", "⚄", "⚅"];
 
+const rollDiceSound = new Audio('sounds/roll-dice.mp3');
+const moveSound = new Audio('sounds/move.mp3');
+const transactionSound = new Audio('sounds/transaction.mp3');
+const moneySound = new Audio('sounds/money.mp3');
+const jailSound = new Audio('sounds/jail.mp3');
+
 const chanceEffects = [
-    (player) => { player.money += 170; return `${player.name} mendapat hibah uang 170 dari Bank!`; },
+    (player) => { player.money += 170; moneySound.play(); return `${player.name} mendapat hibah uang 170 dari Bank!`; },
     (player) => {
         player.money -= 130;
         const opponent = players.find(p => p.name !== player.name);
         if (opponent) {
             opponent.money += 130;
+            transactionSound.play();
             return `${player.name} mendonasikan 130 kepada ${opponent.name}.`;
         }
         return `${player.name} tidak memiliki lawan untuk didonasikan.`;
@@ -113,19 +120,21 @@ const chanceEffects = [
         player.position = 0;
         movePlayer(playerIndex);
         player.money += 150;
+        moneySound.play();
         return `${player.name} maju ke Start dan mendapat 150!`;
     }
 ];
 
 const apesEffects = [
-    (player) => { player.money -= 100; return `${player.name} kehilangan 100 karena apes!`; },
+    (player) => { player.money -= 100; moneySound.play(); return `${player.name} kehilangan 100 karena apes!`; },
     (player) => {
         player.inJail = true;
         player.jailTurns = 2;
         player.position = positions.findIndex(t => t.name === "Masuk Penjara");
+        jailSound.play();
         return `${player.name} masuk penjara selama 2 giliran karena apes!`;
     },
-    (player) => { player.money -= 50; return `${player.name} membayar denda 50 karena apes!`; }
+    (player) => { player.money -= 50; moneySound.play(); return `${player.name} membayar denda 50 karena apes!`; }
 ];
 
 function showBubbleText(message) {
@@ -134,7 +143,7 @@ function showBubbleText(message) {
     bubble.style.display = "block";
     setTimeout(() => {
         bubble.style.display = "none";
-    }, 3000); 
+    }, 3000);
 }
 
 window.onload = () => {
@@ -142,7 +151,7 @@ window.onload = () => {
         document.getElementById("loadingScreen").style.display = "none";
         document.getElementById("modeSelection").style.display = "flex";
         updateEloDisplay();
-    }, 2000); 
+    }, 2000);
 };
 
 function startGame(mode) {
@@ -156,7 +165,7 @@ function startGame(mode) {
     document.getElementById("gameOver").style.display = "none";
     gameActive = true;
     currentPlayerIndex = 0;
-    roundCount = 0; 
+    roundCount = 0;
     updateTurnStatus();
     updatePlayerIcons();
     updateMoneyStatus();
@@ -164,17 +173,17 @@ function startGame(mode) {
 
 function initializePlayers() {
     players = [];
-    players.push({ name: 'Player 1', money: 1500, rentIncome: 1500, position: 0, inJail: false, jailTurns: 0, hasGetOutOfJailCard: false });
+    players.push({ name: 'Player 1', money: 2000, rentIncome: 0, position: 0, inJail: false, jailTurns: 0, hasGetOutOfJailCard: false });
     if (gameMode === 'local') {
-        players.push({ name: 'Player 2', money: 1500, rentIncome: 1500, position: 0, inJail: false, jailTurns: 0, hasGetOutOfJailCard: false });
+        players.push({ name: 'Player 2', money: 2000, rentIncome: 0, position: 0, inJail: false, jailTurns: 0, hasGetOutOfJailCard: false });
     } else if (gameMode === 'ai') {
-        players.push({ name: 'AI', money: 1500, rentIncome: 1500, position: 0, inJail: false, jailTurns: 0, hasGetOutOfJailCard: false });
-        aiElo = getAiEloBasedOnPlayerElo(playerElo); 
+        players.push({ name: 'AI', money: 2000, rentIncome: 0, position: 0, inJail: false, jailTurns: 0, hasGetOutOfJailCard: false });
+        aiElo = getAiEloBasedOnPlayerElo(playerElo);
     }
 }
 
 function initializePlayerElements() {
-    playerElements.forEach(el => el.remove()); 
+    playerElements.forEach(el => el.remove());
     playerElements = [];
     players.forEach((player, index) => {
         const playerDiv = document.createElement("div");
@@ -210,6 +219,7 @@ function rollDice() {
     const diceElement = document.getElementById("dice");
     diceElement.style.display = "block";
     diceElement.classList.add("rolling");
+    rollDiceSound.play();
 
     let dice = Math.floor(Math.random() * 6) + 1;
     setTimeout(() => {
@@ -219,15 +229,25 @@ function rollDice() {
         if (currentPlayer.inJail) {
             handleJailTurn(currentPlayer, dice);
         } else {
+            const oldPosition = currentPlayer.position;
             currentPlayer.position = (currentPlayer.position + dice) % positions.length;
+            checkPassStart(oldPosition, currentPlayer.position, currentPlayer);
             movePlayer(currentPlayerIndex);
             handleTileAction(currentPlayer, currentPlayerIndex);
         }
-        setTimeout(() => { 
-            diceElement.style.display = "none"; 
-            updateRollDiceButtonState(); 
+        setTimeout(() => {
+            diceElement.style.display = "none";
+            updateRollDiceButtonState();
         }, 500);
     }, 1000);
+}
+
+function checkPassStart(oldPos, newPos, player) {
+    if (oldPos > newPos || newPos === 0) {
+        player.money += 150;
+        moneySound.play();
+        showBubbleText(`${player.name} melewati Start dan mendapat 150!`);
+    }
 }
 
 function movePlayer(playerIndex) {
@@ -237,6 +257,7 @@ function movePlayer(playerIndex) {
         playerElements[playerIndex].style.left = `${50 + playerIndex * 10}%`;
         playerElements[playerIndex].style.top = `${50 + playerIndex * 10}%`;
         playerElements[playerIndex].style.transform = "translate(-50%, -50%)";
+        moveSound.play();
     }
 }
 
@@ -250,6 +271,7 @@ function upgradeProperty(player, property, playerIndex) {
         player.money -= upgradeCost;
         property.upgradeLevel += 1;
         const newRent = calculateRent(property);
+        transactionSound.play();
 
         const cell = path.find(c => c.dataset.pos == positions.indexOf(property));
         const label = cell.querySelector(".property-label");
@@ -276,6 +298,7 @@ function handleTileAction(player, playerIndex) {
                 player.jailTurns = 3;
                 player.position = positions.findIndex(t => t.name === "Masuk Penjara");
                 movePlayer(playerIndex);
+                jailSound.play();
                 message = `${player.name} masuk penjara selama 3 giliran!`;
             }
             break;
@@ -285,35 +308,17 @@ function handleTileAction(player, playerIndex) {
         case "Apes":
             message = apesEffects[Math.floor(Math.random() * apesEffects.length)](player);
             break;
-        case "Start":
-            player.money += 150;
-            message = `${player.name} mendarat di Start dan mendapat 150!`;
-            break;
         case "Tiket":
         case "KAI":
         case "PLN":
         case "PDAM":
         case "Tiket VIP":
             player.money -= tile.cost;
+            transactionSound.play();
             message = `${player.name} membayar ${tile.cost} untuk ${tile.name}.`;
             break;
         case "Lelang":
-            const owned = positions.filter(p => p.owner === player.name && p.price);
-            if (owned.length > 0) {
-                const property = owned[Math.floor(Math.random() * owned.length)];
-                const sellPrice = Math.floor(property.price * 1.15);
-                player.money += sellPrice;
-                property.owner = null;
-                property.isAvailable = true;
-                property.upgradeLevel = 0;
-                property.rentIncome = 0; 
-                const cell = path.find(c => c.dataset.pos == positions.indexOf(property));
-                const label = cell.querySelector(".property-label");
-                if (label) label.remove(); 
-                message = `${player.name} menjual ${property.name} seharga ${sellPrice}!`;
-            } else {
-                message = `${player.name} tidak punya properti untuk dilelang.`;
-            }
+            message = handleAuction(player, playerIndex);
             break;
         default:
             if (tile.price && tile.isAvailable) {
@@ -355,10 +360,11 @@ function handleTileAction(player, playerIndex) {
                 const owner = players.find(p => p.name === tile.owner);
                 const currentRent = calculateRent(tile);
                 player.money -= currentRent;
-                player.rentIncome -= currentRent; 
+                player.rentIncome -= currentRent;
                 owner.money += currentRent;
-                owner.rentIncome += currentRent; 
-                tile.rentIncome += currentRent; 
+                owner.rentIncome += currentRent;
+                tile.rentIncome += currentRent;
+                transactionSound.play();
                 message = `${player.name} membayar sewa ${currentRent} ke ${tile.owner}.`;
             } else {
                 message = `${player.name} mendarat di ${tile.name}.`;
@@ -370,7 +376,7 @@ function handleTileAction(player, playerIndex) {
         return;
     }
 
-    showBubbleText(message); 
+    showBubbleText(message);
     updateMoneyStatus();
     updateTurnStatus();
 }
@@ -400,6 +406,7 @@ function buyProperty(player, property, playerIndex) {
     player.money -= property.price;
     property.owner = player.name;
     property.isAvailable = false;
+    transactionSound.play();
 
     const cell = path.find(c => c.dataset.pos == positions.indexOf(property));
     const label = document.createElement("div");
@@ -407,7 +414,95 @@ function buyProperty(player, property, playerIndex) {
     label.classList.add(player.name === "Player 1" ? "player1" : "player2");
     label.textContent = `Sewa: ${property.rent} (Lv${property.upgradeLevel})`;
     const thead = cell.querySelector("thead");
-    thead.insertAdjacentElement("afterend", label); 
+    thead.insertAdjacentElement("afterend", label);
+}
+
+function handleAuction(player, playerIndex) {
+    const owned = positions.filter(p => p.owner === player.name && p.price);
+    if (owned.length === 0) return `${player.name} tidak punya properti untuk dilelang.`;
+
+    let selectedProperty = null;
+    if (player.name !== 'AI') {
+        showBubbleText(`${player.name}, pilih properti untuk dilelang dengan menge-tap petak.`);
+        path.forEach(cell => {
+            const pos = positions[cell.dataset.pos];
+            if (pos && pos.owner === player.name && pos.price) {
+                cell.style.cursor = "pointer";
+                cell.onclick = () => {
+                    selectedProperty = pos;
+                    cell.style.cursor = "default";
+                    cell.onclick = null;
+                    proceedWithAuction(player, selectedProperty, playerIndex);
+                };
+            }
+        });
+        return `${player.name} sedang memilih properti untuk dilelang...`;
+    } else {
+        selectedProperty = owned[Math.floor(Math.random() * owned.length)];
+        return proceedWithAuction(player, selectedProperty, playerIndex);
+    }
+}
+
+function proceedWithAuction(player, property, playerIndex) {
+    if (!property) return `${player.name} tidak memilih properti untuk dilelang.`;
+
+    const opponent = players.find(p => p.name !== player.name);
+    if (confirm(`${player.name} ingin menukar ${property.name}. ${opponent.name}, tertarik untuk barter?`)) {
+        const opponentOwned = positions.filter(p => p.owner === opponent.name && p.price);
+        if (opponentOwned.length === 0) {
+            return `${opponent.name} tidak punya properti untuk ditukar.`;
+        }
+
+        let opponentProperty = null;
+        if (opponent.name !== 'AI') {
+            showBubbleText(`${opponent.name}, pilih properti untuk ditukar dengan menge-tap petak.`);
+            path.forEach(cell => {
+                const pos = positions[cell.dataset.pos];
+                if (pos && pos.owner === opponent.name && pos.price) {
+                    cell.style.cursor = "pointer";
+                    cell.onclick = () => {
+                        opponentProperty = pos;
+                        cell.style.cursor = "default";
+                        cell.onclick = null;
+                        finalizeAuction(player, property, opponent, opponentProperty);
+                    };
+                }
+            });
+            return `${opponent.name} sedang memilih properti untuk ditukar...`;
+        } else {
+            opponentProperty = opponentOwned[Math.floor(Math.random() * opponentOwned.length)];
+            return finalizeAuction(player, property, opponent, opponentProperty);
+        }
+    } else {
+        return `${opponent.name} menolak barter.`;
+    }
+}
+
+function finalizeAuction(player, property, opponent, opponentProperty) {
+    if (!opponentProperty) return `${opponent.name} tidak memilih properti untuk ditukar.`;
+
+    const tempOwner = property.owner;
+    property.owner = opponent.name;
+    opponentProperty.owner = player.name;
+    player.money += 150;
+    opponent.money += 150;
+    transactionSound.play();
+    moneySound.play();
+
+    updatePropertyLabels(property);
+    updatePropertyLabels(opponentProperty);
+
+    return `${player.name} dan ${opponent.name} menukar ${property.name} dengan ${opponentProperty.name} dan masing-masing mendapat 150 dari bank!`;
+}
+
+function updatePropertyLabels(property) {
+    const cell = path.find(c => c.dataset.pos == positions.indexOf(property));
+    const label = cell.querySelector(".property-label");
+    if (label) {
+        label.classList.remove("player1", "player2");
+        label.classList.add(property.owner === "Player 1" ? "player1" : "player2");
+        label.textContent = `Sewa: ${calculateRent(property)} (Lv${property.upgradeLevel})`;
+    }
 }
 
 function updateTurnStatus() {
@@ -432,6 +527,7 @@ function aiTakeTurn() {
         const diceElement = document.getElementById("dice");
         diceElement.style.display = "block";
         diceElement.classList.add("rolling");
+        rollDiceSound.play();
 
         let dice = Math.floor(Math.random() * 6) + 1;
         setTimeout(() => {
@@ -441,15 +537,17 @@ function aiTakeTurn() {
             if (aiPlayer.inJail) {
                 handleJailTurn(aiPlayer, dice);
             } else {
+                const oldPosition = aiPlayer.position;
                 aiPlayer.position = (aiPlayer.position + dice) % positions.length;
+                checkPassStart(oldPosition, aiPlayer.position, aiPlayer);
                 movePlayer(1);
                 handleTileAction(aiPlayer, 1);
             }
-            setTimeout(() => { 
-                diceElement.style.display = "none"; 
-                updateRollDiceButtonState(); 
+            setTimeout(() => {
+                diceElement.style.display = "none";
+                updateRollDiceButtonState();
             }, 500);
-        }, 1000); 
+        }, 1000);
     }, 1000);
 }
 
@@ -460,66 +558,49 @@ function getAiEloBasedOnPlayerElo(playerElo) {
 }
 
 function aiDecideToBuy(aiPlayer, tile) {
-    if (playerElo < 1350) { 
+    if (playerElo < 1350) {
         return Math.random() > 0.5;
-    } else if (playerElo <= 1500) { 
+    } else if (playerElo <= 1500) {
         const roi = tile.rent / tile.price;
         return aiPlayer.money > tile.price * 1.5 && roi > 0.08;
-    } else { 
+    } else {
         const roi = tile.rent / tile.price;
         const ownedInColor = positions.filter(p => p.color === tile.color && p.owner === aiPlayer.name).length;
         const totalInColor = positions.filter(p => p.color === tile.color).length;
         const reserveMoney = 300;
 
-        return (aiPlayer.money > tile.price + reserveMoney) && 
+        return (aiPlayer.money > tile.price + reserveMoney) &&
                (ownedInColor === totalInColor - 1 || roi > 0.1 || roundCount < 15);
     }
 }
 
 function aiDecideToUpgrade(aiPlayer, tile) {
-    if (playerElo < 1350) { 
+    if (playerElo < 1350) {
         return Math.random() > 0.8;
-    } else if (playerElo <= 1500) { 
+    } else if (playerElo <= 1500) {
         const upgradeCost = Math.floor(tile.price / 3);
         return aiPlayer.money > upgradeCost * 2;
-    } else { 
+    } else {
         const upgradeCost = Math.floor(tile.price / 3);
         const ownedInColor = positions.filter(p => p.color === tile.color && p.owner === aiPlayer.name).length;
         const totalInColor = positions.filter(p => p.color === tile.color).length;
         const reserveMoney = 300;
 
-        return (aiPlayer.money > upgradeCost + reserveMoney) && 
+        return (aiPlayer.money > upgradeCost + reserveMoney) &&
                (ownedInColor === totalInColor || (roundCount > 20 && tile.rentIncome > 0));
     }
 }
 
-function calculateEloChange(playerElo, aiElo, result) {
-    const K = 32; 
-    const expected = 1 / (1 + Math.pow(10, (aiElo - playerElo) / 400));
-    return Math.round(playerElo + K * (result - expected));
-}
-
-function checkGameOver() {
-    for (const player of players) {
-        if (player.rentIncome >= WINNING_RENT_INCOME) {
-            endGame(`${player.name} menang dengan pendapatan sewa ${player.rentIncome}!`);
-            if (gameMode === 'ai') updateElo(player.name === 'Player 1' ? 1 : 0);
-            return;
-        }
-    }
-
-    if (roundCount >= MAX_ROUNDS) {
-        const rentIncomes = players.map(p => ({ name: p.name, rentIncome: p.rentIncome }));
-        const winner = rentIncomes.reduce((max, p) => p.rentIncome > max.rentIncome ? p : max, rentIncomes[0]);
-        endGame(`Ronde habis! ${winner.name} menang dengan pendapatan sewa ${winner.rentIncome}!`);
-        if (gameMode === 'ai') updateElo(winner.name === 'Player 1' ? 1 : 0);
-    }
-}
-
 function updateElo(result) {
-    const oldPlayerElo = playerElo;
-    playerElo = calculateEloChange(playerElo, aiElo, result);
-    aiElo = calculateEloChange(aiElo, oldPlayerElo, 1 - result);
+    if (gameMode !== 'ai') return;
+    const aiLevel = getAiEloBasedOnPlayerElo(playerElo);
+    if (aiLevel === 1200) { // Easy
+        playerElo += result === 1 ? 5 : -15;
+    } else if (aiLevel === 1425) { // Medium
+        playerElo += result === 1 ? 10 : -10;
+    } else { // Hard
+        playerElo += result === 1 ? 15 : -5;
+    }
     updateEloDisplay();
 }
 
@@ -527,11 +608,28 @@ function updateEloDisplay() {
     document.getElementById("playerElo").textContent = playerElo;
 }
 
-function endGame(message) {
+function checkGameOver() {
+    for (const player of players) {
+        if (player.rentIncome >= WINNING_RENT_INCOME) {
+            endGame(`${player.name} menang dengan pendapatan sewa ${player.rentIncome}!`, player.name);
+            if (gameMode === 'ai') updateElo(player.name === 'Player 1' ? 1 : 0);
+            return;
+        }
+    }
+
+    if (roundCount >= MAX_ROUNDS) {
+        const totalScores = players.map(p => ({ name: p.name, total: p.money + p.rentIncome }));
+        const winner = totalScores.reduce((max, p) => p.total > max.total ? p : max, totalScores[0]);
+        endGame(`Ronde habis! ${winner.name} menang dengan total ${winner.total} (Uang: ${players.find(p => p.name === winner.name).money}, Sewa: ${winner.total - players.find(p => p.name === winner.name).money})!`, winner.name);
+        if (gameMode === 'ai') updateElo(winner.name === 'Player 1' ? 1 : 0);
+    }
+}
+
+function endGame(message, winnerName) {
     gameActive = false;
     document.getElementById("rollDiceButton").style.display = "none";
     const gameOverDiv = document.getElementById("gameOver");
-    gameOverDiv.textContent = message;
+    gameOverDiv.innerHTML = `<span style="background-color: yellow; padding: 5px; border-radius: 5px;">${message}</span>`;
     gameOverDiv.style.display = "block";
 
     confetti({
@@ -560,9 +658,9 @@ function updateMoneyStatus() {
 function updateRollDiceButtonState() {
     const rollDiceButton = document.getElementById("rollDiceButton");
     if (!gameActive || (gameMode === 'ai' && currentPlayerIndex !== 0)) {
-        rollDiceButton.disabled = true; 
+        rollDiceButton.disabled = true;
     } else {
-        rollDiceButton.disabled = false; 
+        rollDiceButton.disabled = false;
     }
 }
 
@@ -572,7 +670,7 @@ function resetProperties() {
             pos.isAvailable = true;
             pos.owner = null;
             pos.upgradeLevel = 0;
-            pos.rentIncome = 0; 
+            pos.rentIncome = 0;
             const cell = path.find(c => c.dataset.pos == positions.indexOf(pos));
             const label = cell.querySelector(".property-label");
             if (label) label.remove();
